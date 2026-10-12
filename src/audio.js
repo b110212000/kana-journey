@@ -65,57 +65,194 @@ sources.forEach((source, index) => {
   kanaAudio.set(kata[index], { url, romaji: romaji[index] });
 });
 
-let currentAudio = null;
+
+const decodedClips = new Map();
+const mediaFallbacks = new Map();
+let context = null;
+let currentSource = null;
+let currentMedia = null;
+let currentTimer = null;
+let sequence = 0;
+
+function getContext() {
+  if (!context) {
+    const Context = window.AudioContext || window.webkitAudioContext;
+    if (!Context) throw new Error('此裝置不支援 Web Audio');
+    context = new Context();
+  }
+  return context;
+}
+
+// 錄音約 2～4 秒，兩端可能含空白；只裁切低音量部分，保留輔音的氣音。
+function detectSpeechRange(buffer) {
+  const samples = buffer.getChannelData(0);
+  const sampleRate = buffer.sampleRate;
+  const step = Math.max(1, Math.floor(sampleRate * 0.02));
+  const energies = [];
+  for (let i = 0; i < samples.length; i += step) {
+    let sum = 0;
+    const end = Math.min(samples.length, i + step);
+    for (let j = i; j < end; j++) sum += samples[j] * samples[j];
+    energies.push(Math.sqrt(sum / (end - i)));
+  }
+  const peak = Math.max(...energies);
+  if (!Number.isFinite(peak) || peak < 0.005) return { start: 0, duration: buffer.duration };
+  const threshold = Math.max(0.005, peak * 0.08);
+  const first = energies.findIndex((n) => n >= threshold);
+  const last = energies.findLastIndex((n) => n >= threshold);
+  if (first < 0 || last < first) return { start: 0, duration: buffer.duration };
+  const start = Math.max(0, first * step / sampleRate - 0.18);
+  const end = Math.min(buffer.duration, (last + 1) * step / sampleRate + 0.18);
+  return { start, duration: Math.max(0.1, end - start) };
+}
+
+function loadClip(entry) {
+  if (decodedClips.has(entry.url)) return decodedClips.get(entry.url);
+  const task = (async () => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 6500);
+    try {
+      const res = await fetch(entry.url, { mode: 'cors', signal: controller.signal });
+      if (!res.ok) throw new Error('音檔回應 ' + res.status);
+      const bytes = await res.arrayBuffer();
+      const buffer = await getContext().decodeAudioData(bytes);
+      return { buffer, ...detectSpeechRange(buffer) };
+    } finally {
+      clearTimeout(timeout);
+    }
+  })().catch((error) => {
+    decodedClips.delete(entry.url); // 網路失敗後允許重試
+    throw error;
+  });
+  decodedClips.set(entry.url, task);
+  return task;
+}
+
+export function preloadKana(characters) {
+  if (typeof window === 'undefined') return;
+  // 只預載目前正在學的字，避免手機同時下載 46 份錄音造成卡頓。
+  for (const char of [...new Set(characters)].slice(0, 8)) {
+    const entry = kanaAudio.get(char);
+    if (entry) loadClip(entry).catch(() => {});
+  }
+}
+
+function stopCurrent() {
+  sequence += 1;
+  if (currentTimer) clearTimeout(currentTimer);
+  currentTimer = null;
+  if (currentSource) {
+    try { currentSource.stop(); } catch {}
+    currentSource.disconnect();
+    currentSource = null;
+  }
+  if (currentMedia) {
+    currentMedia.pause();
+    currentMedia = null;
+  }
+  if ('speechSynthesis' in window) speechSynthesis.cancel();
+}
 
 function speakWithBrowser(text) {
   if (!('speechSynthesis' in window)) {
-    window.alert('此瀏覽器無法使用日文語音合成功能。');
+    window.alert('此瀏覽器不支援日文語音播放。');
     return;
   }
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'ja-JP';
-  utterance.rate = 0.8;
+  utterance.rate = 0.9;
   const voice = speechSynthesis.getVoices().find((v) => v.lang.toLowerCase().startsWith('ja'));
   if (voice) utterance.voice = voice;
   speechSynthesis.speak(utterance);
 }
 
-export function speak(text) {
-  if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
-    currentAudio = null;
+// Web Audio 解碼失敗時，仍可透過原生 Audio 播放，不依賴跨來源 fetch。
+function playAsMedia(entry, token, onStatus) {
+  if (token !== sequence) return;
+  let media = mediaFallbacks.get(entry.url);
+  if (!media) {
+    media = new Audio(entry.url);
+    media.preload = 'auto';
+    mediaFallbacks.set(entry.url, media);
   }
-  if ('speechSynthesis' in window) speechSynthesis.cancel();
+  media.pause();
+  try { media.currentTime = 0; } catch {}
+  currentMedia = media;
+  let finished = false;
+  const cleanup = () => {
+    media.removeEventListener('playing', onPlaying);
+    media.removeEventListener('error', onFailure);
+    media.removeEventListener('ended', onEnded);
+    clearTimeout(currentTimer);
+    currentTimer = null;
+  };
+  const onPlaying = () => {
+    if (token === sequence) onStatus?.('playing');
+  };
+  const onEnded = () => {
+    cleanup();
+    if (token === sequence) { currentMedia = null; onStatus?.('idle'); }
+  };
+  const onFailure = () => {
+    if (finished) return;
+    finished = true;
+    cleanup();
+    if (token !== sequence) return;
+    currentMedia = null;
+    onStatus?.('error');
+  };
+  media.addEventListener('playing', onPlaying);
+  media.addEventListener('error', onFailure);
+  media.addEventListener('ended', onEnded);
+  currentTimer = setTimeout(() => {
+    if (token !== sequence || !media.paused) return;
+    media.pause();
+    onFailure();
+  }, 6000);
+  media.play().catch(onFailure);
+}
 
+export function speak(text, onStatus) {
+  stopCurrent();
+  const token = sequence;
   const entry = kanaAudio.get(text);
-  // 單字、整句交給 TTS；單獨假名必須使用已確認的獨立發音。
+
   if (!entry) {
+    onStatus?.('playing');
     speakWithBrowser(text);
     return;
   }
 
-  const sound = new Audio(entry.url);
-  sound.preload = 'auto';
-  currentAudio = sound;
-  let failed = false;
-  const failedToLoad = () => {
-    if (failed || currentAudio !== sound) return;
-    failed = true;
-    currentAudio = null;
-    // 這些假名可能被 TTS 當作助詞或在獨立發音時唸錯，不應再退回 TTS 誤導初學者。
-    if (['ha', 'he', 'wo', 'n'].includes(entry.romaji)) {
-      window.alert('標準發音音檔無法載入，請檢查網路後重試。為避免學到錯誤發音，這個假名不使用 TTS 代替。');
-      return;
-    }
-    speakWithBrowser(text);
-  };
-  sound.addEventListener('error', failedToLoad, { once: true });
-  sound.addEventListener('ended', () => {
-    if (currentAudio === sound) currentAudio = null;
-  }, { once: true });
-  const playback = sound.play();
-  if (playback?.catch) playback.catch(failedToLoad);
+  onStatus?.('loading');
+  let playbackContext;
+  let resumed;
+  try {
+    // 一定要在使用者點擊的同步事件內 resume，避免 iPhone Safari 阻擋播放。
+    playbackContext = getContext();
+    resumed = playbackContext.resume();
+  } catch {
+    playAsMedia(entry, token, onStatus);
+    return;
+  }
+
+  Promise.all([loadClip(entry), resumed]).then(([clip]) => {
+    if (token !== sequence) return; // 快速點另一個字，不可再播放上一個字
+    const source = playbackContext.createBufferSource();
+    source.buffer = clip.buffer;
+    source.connect(playbackContext.destination);
+    currentSource = source;
+    source.onended = () => {
+      if (token !== sequence) return;
+      currentSource = null;
+      onStatus?.('idle');
+    };
+    onStatus?.('playing');
+    source.start(0, clip.start, clip.duration);
+  }).catch(() => {
+    if (token !== sequence) return;
+    // 直接讓原生播放器再試一次；不要把「へ」退回可能唸成 e 的 TTS。
+    playAsMedia(entry, token, onStatus);
+  });
 }
 
 export const kanaAudioCount = sources.length;
