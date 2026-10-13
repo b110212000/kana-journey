@@ -1,4 +1,4 @@
-# YOMIO v1.8.0
+# YOMIO v1.8.1
 
 以手機優先的日文學習網頁 App：一次學一小組五十音、一次練一張單字卡、一次回答一道測驗。透過 GitHub Pages 發佈，無後端及 AI Token。
 
@@ -137,3 +137,13 @@ https://b110212000.github.io/kana-journey/
 - **相容**：新修訂僅校正文案與問法，保留舊題 ID、成績、學習資料 localStorage key 和手動更新入口；本次未匯入外部試題全文。
 - **範圍聲明**：本站題庫為自編練習題，不是 JLPT 官方試卷，也尚未構成完整分科計時模擬考；其他網站的題目授權需逐項確認。
 - GitHub Issue：[#5](https://github.com/b110212000/kana-journey/issues/5)
+
+## v1.8.1：Safari 分享與安裝操作說明（Issue #6）
+
+- **問題原因**：設定頁「分享 App」使用 Web Share API（`navigator.share`），iOS 系統分享清單不一定提供 Safari 作為分享目標。Safari 的「加入主畫面」操作是在 Safari 本身的分享選單中執行，兩者不同。
+- **介面調整**：「分享 App」改標示為「分享給朋友」，繼續支援 LINE、訊息及複製網站連結；安裝區提供清楚的「複製網址，貼到 Safari」與「嘗試開啟瀏覽器」。
+- **操作步驟**：iPhone 使用者先複製 YOMIO 網址 → 打開 Safari 並貼上 → 在 Safari 點選分享 → 加入主畫面 → 加入。
+- **平台限制**：在主畫面 PWA 裡開啟 `target="_blank"` 連結，能否跳到 Safari 由 iOS 決定，本站不保證一定能強制切換。複製網址後手動在 Safari 開啟是穩定的備援方式。
+- **安全與相容**：保留舊的分享／複製功能、三秒 Toast、學習紀錄與既有網址，沒有新增權限、伺服器或廣告。
+- 官方操作參考：[Apple iPhone Safari 網頁加入主畫面](https://support.apple.com/en-mide/guide/iphone/iphea86e5236/27/ios/27)
+- GitHub 追蹤：[#6](https://github.com/b110212000/kana-journey/issues/6)
