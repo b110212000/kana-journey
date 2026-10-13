@@ -9,10 +9,12 @@ import './app.css';
 import './ios.css';
 import './yomio.css';
 import './quiz.css';
-import AppSharing from './AppSharing';
+import SettingsView from './SettingsView';
+import {useAppUpdate} from './useAppUpdate';
+import packageInfo from '../package.json';
 import {useToast} from './ToastProvider';
 
-const VERSION='1.5.1';
+const VERSION=packageInfo.version;
 const APP_ICON=`${import.meta.env.BASE_URL}icon.svg?v=130`;
 const KEY='kana-journey-v1';
 const families=[
@@ -52,6 +54,8 @@ function getLevelPool(level){
 }
 function App(){
  const [db,setDb]=useState(getSaved);
+ const [settingsOpen,setSettingsOpen]=useState(null);
+ const update=useAppUpdate(VERSION);
  const [tab,setTab]=useState('home');
  const contentRef=useRef(null);
  const completedRunRef=useRef(null);
@@ -98,7 +102,7 @@ function App(){
  const topics=level==='初階'?['全部','假名','單字']:['全部','單字','文法','讀解'];
  const issue=paper[at];
  const progress=paper.length?Math.round(100*at/paper.length):0;
- const go=next=>{setTab(next);setAudioStatus('idle');setAudioNote(false);if(contentRef.current)contentRef.current.scrollTop=0};
+ const go=(next,settingsSection=null)=>{if(next==='settings')setSettingsOpen(settingsSection);setTab(next);setAudioStatus('idle');setAudioNote(false);if(contentRef.current)contentRef.current.scrollTop=0};
  const changeTheme=next=>setDb(old=>({...old,theme:next}));
  const selectQuizPanel=panel=>{setQuizPanel(panel);if(contentRef.current)contentRef.current.scrollTop=0};
  const changeLevel=next=>{setLevel(next);setFocus('全部');setWordIndex(0);setPaper([]);setSessionDone(false);setPicked(null);setReviewMode(false);setQuizPanel('practice')};
@@ -179,7 +183,7 @@ function App(){
      notify('成績已存入測驗紀錄。');
    }else {setAt(x=>x+1);setPicked(null)}
  }
- function navButton(key,title,glyph){return <button key={key} type="button" aria-current={tab===key?'page':undefined} className={'navButton '+(tab===key?'current':'')} onClick={()=>go(key)}><span className="navIcon" aria-hidden="true">{glyph}</span><span>{title}</span></button>}
+ function navButton(key,title,glyph){return <button key={key} type="button" aria-current={tab===key?'page':undefined} aria-label={key==='settings'&&update.available?'設定，有新版本可更新':title} className={'navButton '+(tab===key?'current':'')} onClick={()=>go(key)}><span className="navIcon" aria-hidden="true">{glyph}{key==='settings'&&update.available&&<span className="settingsUpdateDot"/>}</span><span>{title}</span></button>}
  return <div className="app">
   <aside className="sidebar">
    <button className="logo" onClick={()=>go('home')}><img className="brandIcon" src={APP_ICON} alt=""/><span><strong>YOMIO</strong><small>日本語，一點一點學</small></span></button>
@@ -191,13 +195,13 @@ function App(){
   <main className="content">
    <header className="appTop">
     <div className="appTitle"><img src={APP_ICON} alt="" className="headerIcon"/><div><span className="smallOverline">YOMIO · JAPANESE LEARNING</span><h1>{({home:'今天也來學日文',learn:level==='初階'?'五十音學習':'課程學習',words:'單字練習',quiz:quizPanel==='history'?'測驗紀錄':'隨機測驗',settings:'設定'})[tab]}</h1></div></div>
-    {tab!=='settings'&&<button className="headerSettings" type="button" aria-label="開啟設定" onClick={()=>go('settings')}><Settings2 size={22}/></button>}
+    {tab!=='settings'&&<button className="headerSettings" type="button" aria-label="開啟設定" onClick={()=>go('settings')}><Settings2 size={22}/>{update.available&&<span className="settingsUpdateDot" aria-hidden="true"/>}</button>}
    </header>
    <div className="contentScroll" ref={contentRef} id="app-scroll">
    {tab==='home'&&<section className="page">
     <div className="heroSimple"><div><span className="eyebrow">YOMIO · DAILY LEARNING</span><h2>每天一點，<br/>日文更近一點。</h2><p>從五十音開始，輕鬆走向日常對話。</p></div><img className="heroBrandMark" src={APP_ICON} alt="YOMIO 標誌"/></div>
     <div className="sectionHeading"><div><h2>繼續你的學習</h2><p>今天先完成一個小目標。</p></div></div>
-    <button className="levelShortcut" onClick={()=>go('settings')} aria-label="前往設定調整目前程度"><span className="levelSymbol">文</span><span><small>目前程度</small><strong>{level}・{levels.find(x=>x.id===level)?.subtitle}</strong></span><ChevronRight size={19}/></button>
+    <button className="levelShortcut" onClick={()=>go('settings','level')} aria-label="前往設定調整目前程度"><span className="levelSymbol">文</span><span><small>目前程度</small><strong>{level}・{levels.find(x=>x.id===level)?.subtitle}</strong></span><ChevronRight size={19}/></button>
     <div className="actionPair"><button className="routeCard" onClick={()=>go('learn')}><span className="routeIcon">あ</span><strong>{level==='初階'?'學習五十音':'本級重點單字'}</strong><span>循序學習・每次一小組</span><b>開始學習 →</b></button><button className="routeCard" onClick={()=>beginQuizFromHome()}><span className="routeIcon warm">✓</span><strong>今天的 10 題練習</strong><span>題目和選項隨機排列</span><b>開始測驗 →</b></button></div>
     <div className="miniStats"><span>已作答 <strong>{stats.total||0}</strong> 題</span><span>正確率 <strong>{success}%</strong></span><span>待複習 <strong>{Object.values(wrong).filter(n=>n>0).length}</strong> 題</span></div>
     {quizHistory.length>0&&<button className="latestScoreShortcut" onClick={()=>{setQuizPanel('history');go('quiz')}}><span className="latestScoreIcon"><Trophy size={23}/></span><span><strong>我的測驗紀錄</strong><small>已完成 {quizHistory.length} 回合，最近一次 {scorePercent(quizHistory[0])}%</small></span><ChevronRight size={18}/></button>}
@@ -256,31 +260,11 @@ function App(){
      <button className="quitTest" onClick={()=>{setPaper([]);setPicked(null)}}>結束本回合</button>
     </div>}
    </section>}
-   {tab==='settings'&&<section className="page narrow settingsPage">
-      <div className="settingsBrand"><img className="settingsBrandIcon" src={APP_ICON} alt=""/><div><strong>YOMIO</strong><p>每天一點，日文更近一點。</p></div></div><div className="settingsIntro"><h2>個人化學習</h2><p>讓 YOMIO 符合你的程度與使用習慣。</p></div>
-      <div className="settingsGroup">
-       <div className="settingsHeading"><BookOpen size={19}/><span>學習設定</span></div>
-       <label className="settingsField" htmlFor="study-level"><span><strong>目前程度</strong><small>變更後套用至單字與測驗</small></span>
-        <span className="selectWrap"><select id="study-level" value={level} onChange={e=>changeLevel(e.target.value)}>{levels.map(v=><option key={v.id} value={v.id}>{v.id}</option>)}</select><ChevronRight size={16}/></span>
-       </label>
-       <div className="settingsDescription">{levels.find(x=>x.id===level)?.description}</div>
-      </div>
-      <div className="settingsGroup">
-       <div className="settingsHeading"><Sun size={19}/><span>外觀</span></div>
-       <div className="settingsOptionTitle"><strong>顯示模式</strong><small>自訂整個 App 的顏色</small></div>
-       <div className="themeChoices" role="group" aria-label="切換亮暗模式">
-        <button type="button" className={theme==='light'?'selected':''} onClick={()=>changeTheme('light')} aria-pressed={theme==='light'}><Sun size={19}/> 淺色模式</button>
-        <button type="button" className={theme==='dark'?'selected':''} onClick={()=>changeTheme('dark')} aria-pressed={theme==='dark'}><Moon size={19}/> 深色模式</button>
-       </div>
-      </div>
-      <AppSharing/>
-      <div className="settingsGroup">
-       <div className="settingsHeading"><Info size={19}/><span>關於 App</span></div>
-       <div className="settingsRow"><span>應用程式</span><strong>YOMIO</strong></div>
-       <div className="settingsRow"><span>目前版本</span><strong>v{VERSION}</strong></div>
-       <div className="settingsRow"><span>資料儲存</span><strong>此裝置瀏覽器</strong></div>
-      </div>
-     </section>}
+   {tab==='settings'&&<SettingsView
+    level={level} levels={levels} onLevelChange={changeLevel}
+    theme={theme} onThemeChange={changeTheme} appIcon={APP_ICON}
+    version={VERSION} update={update}
+    open={settingsOpen} onToggle={setSettingsOpen}/>}
    <footer>YOMIO · 學習資料儲存於此裝置・題目為原創練習題，非 JLPT 官方歷屆試題・<a href="https://www.jlpt.jp/tw/samples/sampleindex.html" target="_blank" rel="noreferrer">官方樣題</a></footer>
   </div>
   </main>
