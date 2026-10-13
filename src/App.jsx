@@ -55,6 +55,7 @@ function App(){
  const completedRunRef=useRef(null);
  const [quizPanel,setQuizPanel]=useState('practice');
  const [sessionId,setSessionId]=useState(null);
+ const [sessionMeta,setSessionMeta]=useState(null);
  const [latestResult,setLatestResult]=useState(null);
  const [shareStatus,setShareStatus]=useState('');
  const theme=db.theme==='dark'?'dark':'light';
@@ -97,6 +98,7 @@ function App(){
  const progress=paper.length?Math.round(100*at/paper.length):0;
  const go=next=>{setTab(next);setAudioStatus('idle');setAudioNote(false);if(contentRef.current)contentRef.current.scrollTop=0};
  const changeTheme=next=>setDb(old=>({...old,theme:next}));
+ const selectQuizPanel=panel=>{setQuizPanel(panel);setShareStatus('');if(contentRef.current)contentRef.current.scrollTop=0};
  const changeLevel=next=>{setLevel(next);setFocus('全部');setWordIndex(0);setPaper([]);setSessionDone(false);setPicked(null);setReviewMode(false);setQuizPanel('practice')};
  const shareResult=async result=>{if(!result)return;setShareStatus('');try{const status=await shareScore(result);if(status==='copied')setShareStatus('成績文字已複製，可以貼到 LINE 或訊息。');if(status==='downloaded')setShareStatus('已建立成績圖片，可以再分享給朋友。')}catch{setShareStatus('無法開啟分享功能，請改用儲存圖片。')}};
  const chooseFamily=i=>{setFamily(i);setCard(0);setAudioStatus('idle')};
@@ -124,6 +126,7 @@ function App(){
    const quiz=shuffled(all).slice(0,10).map(q=>({...q,options:shuffled(q.options)}));
    setPaper(quiz);setAt(0);setPicked(null);setCorrectInRound(0);setReviewMode(wrongOnly);
    setSessionId('run-'+Date.now()+'-'+Math.random().toString(36).slice(2,7));
+   setSessionMeta({level,category:wrongOnly?'錯題複習':withFocus});
    setLatestResult(null);setShareStatus('');completedRunRef.current=null;
    setQuizPanel('practice');setSessionDone(false);go('quiz');
  }
@@ -140,11 +143,11 @@ function App(){
      const item={
        id:sessionId||'run-'+Date.now(),
        date:Date.now(),
-       level,
+       level:sessionMeta?.level||level,
        correct:correctInRound,
        total:paper.length,
        mode:reviewMode?'review':'practice',
-       category:reviewMode?'錯題複習':focus
+       category:sessionMeta?.category||(reviewMode?'錯題複習':focus)
      };
      setDb(old=>{
        const history=Array.isArray(old.quizHistory)?old.quizHistory:[];
@@ -204,8 +207,8 @@ function App(){
     <div><span className="eyebrow">PRACTICE ・ {level}</span><h2>一題一題，專心思考</h2><p>單次最多 10 題，題目與選項都會重新隨機排列。</p></div>
    </div>
    <div className="quizTabs" role="group" aria-label="測驗與歷史紀錄">
-    <button type="button" className={quizPanel==='practice'?'selected':''} aria-pressed={quizPanel==='practice'} onClick={()=>setQuizPanel('practice')}><ClipboardCheck size={17}/> 開始測驗</button>
-    <button type="button" className={quizPanel==='history'?'selected':''} aria-pressed={quizPanel==='history'} onClick={()=>setQuizPanel('history')}><History size={17}/> 測驗紀錄 <span className="historyCount">{quizHistory.length}</span></button>
+    <button type="button" className={quizPanel==='practice'?'selected':''} aria-pressed={quizPanel==='practice'} onClick={()=>selectQuizPanel('practice')}><ClipboardCheck size={17}/> 開始測驗</button>
+    <button type="button" className={quizPanel==='history'?'selected':''} aria-pressed={quizPanel==='history'} onClick={()=>selectQuizPanel('history')}><History size={17}/> 測驗紀錄 <span className="historyCount">{quizHistory.length}</span></button>
    </div>
    {quizPanel==='history'?<QuizHistory history={quizHistory} onShare={shareResult} onDownload={downloadScoreImage} onPractice={()=>{setPaper([]);setQuizPanel('practice');setShareStatus('')}} shareStatus={shareStatus}/>:
    !paper.length?<div className="testSetup"><h3>準備開始 {level} 練習</h3><div className="chipGroup">{topics.map(type=><button key={type} className={focus===type?'active':''} onClick={()=>setFocus(type)}>{type}</button>)}</div><p className="muted">{level==='初階'?'初階預設從目前學習的 '+rowInfo.name+' 出題；選「單字」可練生活單字。':'選擇題型，不想限制就選「全部」。'}</p><button className="primary" onClick={()=>begin(false)}>開始隨機測驗 →</button>
@@ -221,7 +224,7 @@ function App(){
       {shareStatus&&<p className="shareHint" role="status">{shareStatus}</p>}
       <div className="resultSecondary">
        <button onClick={()=>begin(false)}><RotateCcw size={16}/> 再做一回合</button>
-       <button onClick={()=>{setQuizPanel('history');setShareStatus('')}}><History size={16}/> 查看紀錄</button>
+       <button onClick={()=>selectQuizPanel('history')}><History size={16}/> 查看紀錄</button>
       </div>
       <button className="bare" onClick={()=>{setPaper([]);setSessionDone(false)}}>調整題型</button>
     </div>
