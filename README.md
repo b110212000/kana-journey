@@ -1,4 +1,4 @@
-# YOMIO v1.4.0
+# YOMIO v1.5.0
 
 以手機優先的日文學習網頁 App：一次學一小組五十音、一次練一張單字卡、一次回答一道測驗。透過 GitHub Pages 發佈，無後端及 AI Token。
 
@@ -77,3 +77,13 @@ https://b110212000.github.io/kana-journey/
 - **限制**：沒有帳號、雲端同步或跨裝置排行榜。若清除站點資料或刪除已安裝的 PWA，仍可能失去本機紀錄。
 
 注意：只有完整完成一回合才會新增紀錄；舊版本只存答題總數／錯題，無法反推舊回合的成績，因此 v1.4.0 上線前的回合不會自動出現在歷史列表中。
+
+## v1.5.0：設定頁分享與安裝 YOMIO（Issue #1）
+
+- **分享 App**：設定 → 分享 YOMIO →「分享 App」，在 iPhone Safari / 支援 Web Share API 的瀏覽器開啟原生分享選單，可直接傳到 LINE、訊息等 App；使用者取消分享時不視為錯誤。不支援原生分享則自動複製網址。
+- **一鍵複製連結**：設定 →「複製連結」或「複製安裝連結」，會複製目前 GitHub Pages 公開網址。使用 Clipboard API，必要時退回選取複製，並回報操作結果。
+- **iPhone 安裝說明**：Safari → 分享 → 加入主畫面 → 加入。iPhone Safari 不允許網頁直接強制安裝，必須由使用者操作。
+- **Android 安裝說明**：Chrome → 選單 → 安裝應用程式或加到主畫面；若裝置提供 `beforeinstallprompt`，另顯示直接開啟安裝提示的按鈕。
+- **已安裝狀態**：以 PWA standalone 模式開啟時顯示已從主畫面使用的提示，不重複引導安裝。
+- **相容性**：維持原網址、`localStorage` 學習紀錄、程度設定、Light / Dark Mode、iPhone Safe Area，以及底部分頁。分享與複製均為使用者主動觸發，不使用後端或付費服務。
+- GitHub 追蹤：[#1](https://github.com/b110212000/kana-journey/issues/1)
