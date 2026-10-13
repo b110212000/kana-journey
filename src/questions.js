@@ -15,7 +15,7 @@ const originalQuestionBank = {
     {
       "id": "N5-1",
       "type": "單字",
-      "prompt": "「水（みず）」的意思是？",
+      "prompt": "日文「水（みず）」是什麼意思？",
       "answer": "水",
       "options": [
         "水",
@@ -23,12 +23,12 @@ const originalQuestionBank = {
         "山",
         "天空"
       ],
-      "explain": "みず 是水。"
+      "explain": "「みず」就是日文的「水」。"
     },
     {
       "id": "N5-2",
       "type": "單字",
-      "prompt": "「学校（がっこう）」是什麼地方？",
+      "prompt": "日文「学校（がっこう）」指的是哪個地方？",
       "answer": "學校",
       "options": [
         "學校",
@@ -36,12 +36,12 @@ const originalQuestionBank = {
         "車站",
         "銀行"
       ],
-      "explain": "学校指學校。"
+      "explain": "「学校」就是學校，讀作「がっこう」。"
     },
     {
       "id": "N5-3",
       "type": "單字",
-      "prompt": "「あした」表示？",
+      "prompt": "日文「明日（あした）」是指哪一天？",
       "answer": "明天",
       "options": [
         "明天",
@@ -49,12 +49,12 @@ const originalQuestionBank = {
         "今天",
         "上週"
       ],
-      "explain": "明日／あした表示明天。"
+      "explain": "「あした」是明天，也常寫作「明日」。"
     },
     {
       "id": "N5-4",
       "type": "單字",
-      "prompt": "「犬（いぬ）」是哪種動物？",
+      "prompt": "日文「犬（いぬ）」是哪一種動物？",
       "answer": "狗",
       "options": [
         "狗",
@@ -62,7 +62,7 @@ const originalQuestionBank = {
         "鳥",
         "魚"
       ],
-      "explain": "犬是狗，貓是ねこ。"
+      "explain": "「犬（いぬ）」是狗；貓則是「猫（ねこ）」。"
     },
     {
       "id": "N5-5",
@@ -75,7 +75,7 @@ const originalQuestionBank = {
         "で",
         "へ"
       ],
-      "explain": "以 は 標示句子的主題；此處讀作 wa。"
+      "explain": "「は」在這裡用來標示句子的主題，作助詞時讀作「wa」。"
     },
     {
       "id": "N5-6",
@@ -88,7 +88,7 @@ const originalQuestionBank = {
         "が",
         "の"
       ],
-      "explain": "精確時間點常用助詞 に。"
+      "explain": "說明幾點起床時，通常在時間後面加助詞「に」。"
     },
     {
       "id": "N5-7",
@@ -101,7 +101,7 @@ const originalQuestionBank = {
         "へ",
         "で"
       ],
-      "explain": "を 標示動作的受詞。"
+      "explain": "喝咖啡時，「コーヒー」是動作的對象，所以用助詞「を」。"
     },
     {
       "id": "N5-8",
@@ -114,7 +114,7 @@ const originalQuestionBank = {
         "を",
         "で"
       ],
-      "explain": "の 表示所屬。"
+      "explain": "「の」可以表示所有關係，這句是說「這是我的書」。"
     },
     {
       "id": "N5-9",
@@ -127,12 +127,12 @@ const originalQuestionBank = {
         "見ません",
         "見るでしょう"
       ],
-      "explain": "きのう是昨天，搭配禮貌過去式 見ました。"
+      "explain": "「きのう」是昨天，描述昨天看電影，要用過去式「見ました」。"
     },
     {
       "id": "N5-10",
       "type": "讀解",
-      "prompt": "「田中さんは日曜日に図書館へ行きます。」田中星期日要去哪裡？",
+      "prompt": "「田中さんは日曜日に図書館へ行きます。」田中星期天要去哪裡？",
       "answer": "圖書館",
       "options": [
         "圖書館",
@@ -140,12 +140,12 @@ const originalQuestionBank = {
         "學校",
         "車站"
       ],
-      "explain": "図書館是圖書館；へ表示移動方向。"
+      "explain": "田中星期天要去圖書館；「へ」用來表示移動的方向。"
     },
     {
       "id": "N5-11",
       "type": "單字",
-      "prompt": "「大きい」的反義詞是？",
+      "prompt": "日文「大きい」的相反詞是什麼？",
       "answer": "小さい",
       "options": [
         "小さい",
@@ -153,7 +153,7 @@ const originalQuestionBank = {
         "白い",
         "高い"
       ],
-      "explain": "大きい是大，小さい是小。"
+      "explain": "「大きい」是大，「小さい」是小。"
     },
     {
       "id": "N5-12",
@@ -166,14 +166,14 @@ const originalQuestionBank = {
         "に",
         "の"
       ],
-      "explain": "動作發生的場所使用 で。"
+      "explain": "拍照的地點用助詞「で」來表示，因此這裡要選「で」。"
     }
   ],
   "N4": [
     {
       "id": "N4-1",
       "type": "單字",
-      "prompt": "「約束（やくそく）」的意思是？",
+      "prompt": "日文「約束（やくそく）」是什麼意思？",
       "answer": "約定",
       "options": [
         "約定",
@@ -181,12 +181,12 @@ const originalQuestionBank = {
         "報告",
         "理由"
       ],
-      "explain": "約束是約定或承諾。"
+      "explain": "「約束」是約定，也可以指承諾。"
     },
     {
       "id": "N4-2",
       "type": "單字",
-      "prompt": "「準備（じゅんび）」表示？",
+      "prompt": "日文「準備（じゅんび）」是什麼意思？",
       "answer": "準備",
       "options": [
         "準備",
@@ -194,12 +194,12 @@ const originalQuestionBank = {
         "決定",
         "遲到"
       ],
-      "explain": "準備是為接下來的事情做準備。"
+      "explain": "「準備」就是事先把需要的事情安排好。"
     },
     {
       "id": "N4-3",
       "type": "單字",
-      "prompt": "「遅れる（おくれる）」表示？",
+      "prompt": "日文「遅れる（おくれる）」是什麼意思？",
       "answer": "遲到／延誤",
       "options": [
         "遲到／延誤",
@@ -207,12 +207,12 @@ const originalQuestionBank = {
         "忘記",
         "到達"
       ],
-      "explain": "遅れる表示遲到或延誤。"
+      "explain": "「遅れる」可以指人遲到，也可以指電車等交通工具誤點。"
     },
     {
       "id": "N4-4",
       "type": "單字",
-      "prompt": "「別々（べつべつ）」表示？",
+      "prompt": "日文「別々（べつべつ）」是什麼意思？",
       "answer": "分開／各自",
       "options": [
         "分開／各自",
@@ -220,7 +220,7 @@ const originalQuestionBank = {
         "大約",
         "偶爾"
       ],
-      "explain": "別々常用來表示各自分開。"
+      "explain": "「別々」表示各自分開，例如「別々に払う」就是分開結帳。"
     },
     {
       "id": "N4-5",
@@ -233,7 +233,7 @@ const originalQuestionBank = {
         "ことが",
         "ものを"
       ],
-      "explain": "ようにしています 表示努力養成某種習慣。"
+      "explain": "「～ようにしています」表示有意識地維持某個習慣，例如每天學日文。"
     },
     {
       "id": "N4-6",
@@ -246,7 +246,7 @@ const originalQuestionBank = {
         "でも",
         "なら"
       ],
-      "explain": "～し～し 可列舉理由或特徵。"
+      "explain": "「～し」可以用來列舉理由或特點；這裡表示這家店便宜又好吃。"
     },
     {
       "id": "N4-7",
@@ -259,7 +259,7 @@ const originalQuestionBank = {
         "したい",
         "しない"
       ],
-      "explain": "Vてから 表示做完前一動作之後。"
+      "explain": "「動詞て形＋から」表示先做完一件事，再做下一件事。"
     },
     {
       "id": "N4-8",
@@ -272,7 +272,7 @@ const originalQuestionBank = {
         "撮るなら",
         "撮っても"
       ],
-      "explain": "～てはいけません 表示禁止。"
+      "explain": "「～てはいけません」表示禁止，所以這句是不可以在這裡拍照。"
     },
     {
       "id": "N4-9",
@@ -285,12 +285,12 @@ const originalQuestionBank = {
         "ながら",
         "だけ"
       ],
-      "explain": "ので 表示原因。"
+      "explain": "「ので」表示原因；這句是說因為正在下雨，所以要帶傘。"
     },
     {
       "id": "N4-10",
       "type": "讀解",
-      "prompt": "「今日は寒いので、上着を持って出かけます。」帶外套的理由是？",
+      "prompt": "「今日は寒いので、上着を持って出かけます。」為什麼要帶外套出門？",
       "answer": "天氣冷",
       "options": [
         "天氣冷",
@@ -298,7 +298,7 @@ const originalQuestionBank = {
         "要下雨",
         "外套很新"
       ],
-      "explain": "寒いので = 因為冷。"
+      "explain": "因為今天很冷，所以出門時要帶外套。"
     },
     {
       "id": "N4-11",
@@ -311,12 +311,12 @@ const originalQuestionBank = {
         "ところ",
         "はず"
       ],
-      "explain": "～たことがある 表示曾經有過的經驗。"
+      "explain": "「～たことがある」表示以前曾經做過某件事。"
     },
     {
       "id": "N4-12",
       "type": "單字",
-      "prompt": "「間に合う（まにあう）」的意思是？",
+      "prompt": "日文「間に合う（まにあう）」是什麼意思？",
       "answer": "趕得上",
       "options": [
         "趕得上",
@@ -324,14 +324,14 @@ const originalQuestionBank = {
         "休息",
         "買得到"
       ],
-      "explain": "間に合う表示在期限前趕上。"
+      "explain": "「間に合う」就是及時趕上，例如在開會前抵達。"
     }
   ],
   "N3": [
     {
       "id": "N3-1",
       "type": "單字",
-      "prompt": "「解決（かいけつ）」的意思是？",
+      "prompt": "日文「解決（かいけつ）」是什麼意思？",
       "answer": "解決",
       "options": [
         "解決",
@@ -339,12 +339,12 @@ const originalQuestionBank = {
         "解釋",
         "取消"
       ],
-      "explain": "解決 表示把問題處理好。"
+      "explain": "「解決」就是把問題處理好。"
     },
     {
       "id": "N3-2",
       "type": "單字",
-      "prompt": "「当然（とうぜん）」表示？",
+      "prompt": "日文「当然（とうぜん）」是什麼意思？",
       "answer": "理所當然",
       "options": [
         "理所當然",
@@ -352,12 +352,12 @@ const originalQuestionBank = {
         "勉強",
         "極少"
       ],
-      "explain": "当然是理所當然。"
+      "explain": "「当然」表示理所當然、原本就應該如此。"
     },
     {
       "id": "N3-3",
       "type": "單字",
-      "prompt": "「影響（えいきょう）」的意思是？",
+      "prompt": "日文「影響（えいきょう）」是什麼意思？",
       "answer": "影響",
       "options": [
         "影響",
@@ -365,12 +365,12 @@ const originalQuestionBank = {
         "應援",
         "方向"
       ],
-      "explain": "影響與中文用法相近。"
+      "explain": "「影響」和中文用法相近，指某事造成的作用或變化。"
     },
     {
       "id": "N3-4",
       "type": "單字",
-      "prompt": "「確認（かくにん）」表示？",
+      "prompt": "日文「確認（かくにん）」是什麼意思？",
       "answer": "確認",
       "options": [
         "確認",
@@ -378,7 +378,7 @@ const originalQuestionBank = {
         "反省",
         "說明"
       ],
-      "explain": "確認就是查明是否正確。"
+      "explain": "「確認」指核對、查證，確定事情是否正確。"
     },
     {
       "id": "N3-5",
@@ -448,7 +448,7 @@ const originalQuestionBank = {
     {
       "id": "N3-10",
       "type": "讀解",
-      "prompt": "「電車が止まったため、会議の開始を三十分遅らせます。」會議會怎樣？",
+      "prompt": "「電車が止まったため、会議の開始を三十分遅らせます。」會議時間會怎麼調整？",
       "answer": "延後三十分鐘",
       "options": [
         "延後三十分鐘",
@@ -456,12 +456,12 @@ const originalQuestionBank = {
         "取消",
         "改到明天"
       ],
-      "explain": "開始を遅らせます 表示延後開始。"
+      "explain": "因為電車停駛，會議將延後三十分鐘開始。"
     },
     {
       "id": "N3-11",
       "type": "單字",
-      "prompt": "「なるべく」的意思是？",
+      "prompt": "日文「なるべく」是什麼意思？",
       "answer": "盡可能",
       "options": [
         "盡可能",
@@ -469,7 +469,7 @@ const originalQuestionBank = {
         "偶爾",
         "終於"
       ],
-      "explain": "なるべく = 盡可能。"
+      "explain": "「なるべく」是盡可能、儘量的意思。"
     },
     {
       "id": "N3-12",
@@ -489,7 +489,7 @@ const originalQuestionBank = {
     {
       "id": "N2-1",
       "type": "單字",
-      "prompt": "「改善（かいぜん）」表示？",
+      "prompt": "日文「改善（かいぜん）」是什麼意思？",
       "answer": "改善",
       "options": [
         "改善",
@@ -497,12 +497,12 @@ const originalQuestionBank = {
         "解散",
         "檢討"
       ],
-      "explain": "改善表示使狀況變好。"
+      "explain": "「改善」就是讓原本的情況變得更好。"
     },
     {
       "id": "N2-2",
       "type": "單字",
-      "prompt": "「妥当（だとう）」的意思是？",
+      "prompt": "日文「妥当（だとう）」是什麼意思？",
       "answer": "妥當合理",
       "options": [
         "妥當合理",
@@ -510,12 +510,12 @@ const originalQuestionBank = {
         "非常新奇",
         "完全一致"
       ],
-      "explain": "妥当 表示合適、合理。"
+      "explain": "「妥当」表示合理、恰當，常用來形容判斷或做法。"
     },
     {
       "id": "N2-3",
       "type": "單字",
-      "prompt": "「促進（そくしん）」表示？",
+      "prompt": "日文「促進（そくしん）」是什麼意思？",
       "answer": "促進",
       "options": [
         "促進",
@@ -523,12 +523,12 @@ const originalQuestionBank = {
         "節省",
         "維護"
       ],
-      "explain": "促進是推動進展。"
+      "explain": "「促進」就是推動某件事，讓它更快進展。"
     },
     {
       "id": "N2-4",
       "type": "單字",
-      "prompt": "「検討（けんとう）」表示？",
+      "prompt": "日文「検討（けんとう）」是什麼意思？",
       "answer": "研究評估",
       "options": [
         "研究評估",
@@ -536,7 +536,7 @@ const originalQuestionBank = {
         "公開宣傳",
         "大幅增加"
       ],
-      "explain": "検討表示仔細評估、考慮。"
+      "explain": "「検討」是仔細考慮並評估，尚不代表已經決定。"
     },
     {
       "id": "N2-5",
@@ -606,7 +606,7 @@ const originalQuestionBank = {
     {
       "id": "N2-10",
       "type": "讀解",
-      "prompt": "「新制度の導入は決まったが、具体的な運用方法は今後検討する。」已決定的是什麼？",
+      "prompt": "「新制度の導入は決まったが、具体的な運用方法は今後検討する。」目前已確定的是什麼？",
       "answer": "導入新制度",
       "options": [
         "導入新制度",
@@ -614,12 +614,12 @@ const originalQuestionBank = {
         "取消舊制度的日期",
         "所有人員配置"
       ],
-      "explain": "導入已決定，運用方法仍待討論。"
+      "explain": "已決定要引進新制度，但實際怎麼運作還要再討論。"
     },
     {
       "id": "N2-11",
       "type": "單字",
-      "prompt": "「著しい（いちじるしい）」是？",
+      "prompt": "日文「著しい（いちじるしい）」是什麼意思？",
       "answer": "顯著的",
       "options": [
         "顯著的",
@@ -627,7 +627,7 @@ const originalQuestionBank = {
         "可疑的",
         "細微的"
       ],
-      "explain": "著しい表示程度非常明顯。"
+      "explain": "「著しい」表示程度非常明顯，例如顯著的成長。"
     },
     {
       "id": "N2-12",
@@ -647,7 +647,7 @@ const originalQuestionBank = {
     {
       "id": "N1-1",
       "type": "單字",
-      "prompt": "「看過（かんか）」的意思是？",
+      "prompt": "「看過できない」最接近下列哪個意思？",
       "answer": "不能坐視不管",
       "options": [
         "不能坐視不管",
@@ -655,12 +655,12 @@ const originalQuestionBank = {
         "充分理解",
         "完全同意"
       ],
-      "explain": "看過できない 常表示不能忽視。"
+      "explain": "「看過する」是忽視、置之不理；加上「できない」就表示不能坐視不管。"
     },
     {
       "id": "N1-2",
       "type": "單字",
-      "prompt": "「杞憂（きゆう）」是？",
+      "prompt": "日文「杞憂（きゆう）」是什麼意思？",
       "answer": "不必要的擔心",
       "options": [
         "不必要的擔心",
@@ -668,12 +668,12 @@ const originalQuestionBank = {
         "合理的懷疑",
         "不明原因的失敗"
       ],
-      "explain": "杞憂指多餘的擔憂。"
+      "explain": "「杞憂」指沒有必要的擔心，也就是多慮。"
     },
     {
       "id": "N1-3",
       "type": "單字",
-      "prompt": "「踏襲（とうしゅう）」表示？",
+      "prompt": "日文「踏襲（とうしゅう）」是什麼意思？",
       "answer": "沿襲",
       "options": [
         "沿襲",
@@ -681,12 +681,12 @@ const originalQuestionBank = {
         "放棄",
         "捏造"
       ],
-      "explain": "踏襲表示沿用既有方式。"
+      "explain": "「踏襲」指延續、沿用既有的方式。"
     },
     {
       "id": "N1-4",
       "type": "單字",
-      "prompt": "「如実（にょじつ）」的意思是？",
+      "prompt": "日文「如実（にょじつ）」是什麼意思？",
       "answer": "如實清楚地",
       "options": [
         "如實清楚地",
@@ -694,7 +694,7 @@ const originalQuestionBank = {
         "過於隨意地",
         "勉強地"
       ],
-      "explain": "如実に表れる 表示清楚顯現。"
+      "explain": "「如実に表れる」表示某種情況清楚地顯現出來。"
     },
     {
       "id": "N1-5",
@@ -764,7 +764,7 @@ const originalQuestionBank = {
     {
       "id": "N1-10",
       "type": "讀解",
-      "prompt": "「短期的な数値の改善をもって、政策全体の有効性が証明されたとするのは早計だ。」作者認為？",
+      "prompt": "「短期的な数値の改善をもって、政策全体の有効性が証明されたとするのは早計だ。」作者認為有什麼問題？",
       "answer": "只憑短期數字判斷政策成效太早",
       "options": [
         "只憑短期數字判斷政策成效太早",
@@ -772,12 +772,12 @@ const originalQuestionBank = {
         "短期數據沒有任何價值",
         "政策一定失敗"
       ],
-      "explain": "早計だ 表示過早下結論。"
+      "explain": "作者認為只根據短期數據，就斷定整體政策有效，還太早。"
     },
     {
       "id": "N1-11",
       "type": "單字",
-      "prompt": "「乖離（かいり）」表示？",
+      "prompt": "日文「乖離（かいり）」是什麼意思？",
       "answer": "背離／差距",
       "options": [
         "背離／差距",
@@ -785,7 +785,7 @@ const originalQuestionBank = {
         "交涉",
         "累積"
       ],
-      "explain": "乖離常指實際與預期之間的差距。"
+      "explain": "「乖離」常用來表示現實和目標、預期之間的落差。"
     },
     {
       "id": "N1-12",
