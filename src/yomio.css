@@ -1,0 +1,82 @@
+/* YOMIO v1.3.0 visual identity — based on our book/leaf + sunrise logo. */
+:root{
+ --app-bg:#F5F9F7;--app-card:#FFFFFF;--app-text:#163B3E;--app-muted:#738C8E;
+ --app-line:#DCECE7;--app-accent:#087E75;--app-accent-text:#FFFFFF;
+ --app-soft:#E6F6EE;--app-soft-text:#086B63;--app-input:#F1F8F5;
+ --app-hero:#E5F6EE;--app-hero-line:#CEEBE0;
+ --app-shadow:0 7px 24px rgba(7,91,87,.055);
+ --yomio-sun:#FFD47E;
+}
+:root[data-theme=dark]{
+ --app-bg:#101F25;--app-card:#192D34;--app-text:#EAFBF5;--app-muted:#9FB9B7;
+ --app-line:#31524D;--app-accent:#67D8BF;--app-accent-text:#073C39;
+ --app-soft:#254D45;--app-soft-text:#9AEED6;--app-input:#243D40;
+ --app-hero:#1D4743;--app-hero-line:#35675B;
+ --app-shadow:0 7px 24px rgba(2,16,20,.19);
+ --yomio-sun:#FFDA91;
+}
+.logo{gap:13px}
+.logo strong{font-weight:900;letter-spacing:2.2px;color:var(--app-text);font-size:19px}
+.logo small{font-size:10px;letter-spacing:.15px}
+.brandIcon,.headerIcon{border-radius:13px;box-shadow:0 4px 14px rgba(7,86,85,.16)}
+.smallOverline{font-size:10px;letter-spacing:1.15px;font-weight:800}
+.appTop{backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);background:var(--app-bg)}
+.appTop h1{font-weight:750;letter-spacing:-.6px}
+.navButton.current{font-weight:750}
+.navButton.current .navIcon{color:var(--app-accent)}
+.navButton:hover{color:var(--app-accent)}
+.heroSimple{
+ background:linear-gradient(118deg,var(--app-hero) 0%,var(--app-card) 145%);
+ border:1px solid var(--app-hero-line);
+ position:relative;isolation:isolate;box-shadow:var(--app-shadow)
+}
+.heroSimple:before{
+ content:'';position:absolute;width:154px;height:154px;right:58px;top:-91px;border-radius:50%;
+ background:var(--yomio-sun);opacity:.19;z-index:-1
+}
+.heroSimple h2{letter-spacing:-.7px;color:var(--app-text);font-weight:800}
+.heroSimple .eyebrow{letter-spacing:1.1px}
+.heroSimple p{color:var(--app-muted);font-size:13px}
+.heroBrandMark{
+ width:130px;height:130px;flex:0 0 auto;border-radius:31px;object-fit:cover;
+ box-shadow:0 14px 33px rgba(0,89,84,.17);transform:rotate(-5deg);
+ border:3px solid rgba(255,255,255,.45)
+}
+.routeCard{border-radius:19px;transition:transform .18s ease,border-color .18s ease}
+.routeCard:hover{transform:translateY(-2px)}
+.routeIcon{border-radius:14px}
+.routeIcon.warm{background:#FFF2DA;color:#BC7B39}
+:root[data-theme=dark] .routeIcon.warm{background:#4D4030;color:#FFE1A3}
+.levelShortcut{border-radius:16px}
+.levelSymbol{font-family:'Noto Sans JP',sans-serif}
+.settingsBrand{
+ display:flex;align-items:center;gap:17px;padding:20px 22px;border-radius:21px;
+ background:linear-gradient(112deg,var(--app-hero) 5%,var(--app-card) 120%);
+ border:1px solid var(--app-hero-line);box-shadow:var(--app-shadow)
+}
+.settingsBrandIcon{width:69px;height:69px;object-fit:cover;border-radius:19px;box-shadow:0 8px 19px rgba(1,76,70,.13)}
+.settingsBrand strong{font-family:'Arial Rounded MT Bold','Nunito',sans-serif;letter-spacing:2.7px;font-size:27px;font-weight:900}
+.settingsBrand p{margin:6px 0 0;font-size:12px;color:var(--app-muted)}
+.settingsIntro{margin-top:5px}
+.studyCard,.vocabFlash,.testCard,.testSetup,.settingsGroup{box-shadow:var(--app-shadow)}
+.kanaRow button.chosen{box-shadow:inset 0 0 0 1px var(--app-accent)}
+.focusKana strong,.wordReveal .phonetic{font-weight:800}
+.primary,.playButton{border-radius:12px;box-shadow:0 3px 12px rgba(11,114,102,.13)}
+.settingsHeading{letter-spacing:.2px}
+:root[data-theme=dark] .heroBrandMark{border-color:rgba(255,255,255,.13)}
+:root[data-theme=dark] .appTop{background:rgba(16,31,37,.97)}
+@media(max-width:680px){
+ .appTop{min-height:calc(71px + env(safe-area-inset-top,0px))}
+ .heroSimple{min-height:166px;gap:9px;padding:19px}
+ .heroSimple h2{font-size:20px;line-height:1.52}
+ .heroSimple p{font-size:11px;line-height:1.65}
+ .heroBrandMark{height:83px;width:83px;border-radius:20px;transform:rotate(-4deg);border-width:2px}
+ .heroSimple:before{right:6px;top:-94px}
+ .settingsBrand{padding:15px 16px;border-radius:17px;gap:12px}
+ .settingsBrandIcon{width:59px;height:59px;border-radius:16px}
+ .settingsBrand strong{font-size:22px;letter-spacing:2px}
+ .settingsBrand p{font-size:11px;line-height:1.5}
+ .sidebar{background:var(--app-card)}
+ .navButton.current{color:var(--app-accent)}
+}
+@media(prefers-reduced-motion:reduce){.routeCard{transition:none}.routeCard:hover{transform:none}}
