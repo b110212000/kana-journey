@@ -5,6 +5,7 @@ import {levels,questionBank} from './questions';
 import {gradedWords} from './vocabulary';
 import {speak,preloadKana} from './audio';
 import './app.css';
+import './ios.css';
 
 const VERSION='1.2.0';
 const APP_ICON=`${import.meta.env.BASE_URL}icon.svg`;
