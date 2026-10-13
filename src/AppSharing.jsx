@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Check, Copy, Download, ExternalLink, PlusSquare, Share2, Smartphone} from 'lucide-react';
+import {Check, Copy, Download, ExternalLink, Share2, Smartphone, Globe, ArrowUpRight} from 'lucide-react';
 import './sharing.css';
 import {useToast} from './ToastProvider';
 
@@ -110,7 +110,7 @@ export default function AppSharing() {
   return <>
     <section className="appConnectGroup">
       <div className="settingsHeading"><Share2 size={19}/><span>分享 YOMIO</span></div>
-      <p className="appConnectDescription">邀請朋友一起學日文！你可以開啟手機分享選單，或直接複製網址傳到 LINE。</p>
+      <p className="appConnectDescription">把 YOMIO 分享給朋友，可以透過 LINE、訊息等 App，或直接複製網址。</p>
       <div className="appConnectLink">
         <input type="text" value={url} readOnly aria-label="YOMIO App 網址"
           onFocus={(event)=>event.currentTarget.select()} onClick={(event)=>event.currentTarget.select()}/>
@@ -118,7 +118,7 @@ export default function AppSharing() {
       </div>
       <div className="appConnectActions">
         <button type="button" className="appConnectPrimary" onClick={shareLink}>
-          <Share2 size={18}/> 分享 App
+          <Share2 size={18}/> 分享給朋友
         </button>
         <button type="button" className="appConnectSecondary" onClick={copyLink}>
           <Copy size={18}/> 複製連結
@@ -130,14 +130,14 @@ export default function AppSharing() {
       <div className="settingsHeading"><Smartphone size={19}/><span>安裝 YOMIO App</span></div>
       {standalone ? <>
         <div className="appInstalled"><Check size={18}/><strong>目前正以主畫面 App 模式使用 YOMIO</strong></div>
-        <p className="appConnectDescription">你已經可以從主畫面直接打開，不需要再次安裝。也能複製連結分享給朋友。</p>
+        <p className="appConnectDescription">你已經安裝 YOMIO。如果想用 Safari 開啟網頁版本，請使用下方的網址複製功能。</p>
       </> : <>
         <p className="appConnectDescription">加入手機主畫面後，就能像一般 App 一樣從圖示啟動 YOMIO，不需經過 App Store。</p>
         <div className="appInstallSteps">
           {isIOS ? <>
-            <div><span>1</span><p>使用 <strong>Safari</strong> 開啟 YOMIO 網址。</p></div>
-            <div><span>2</span><p>點選 Safari 的 <strong>分享</strong> 圖示。</p></div>
-            <div><span>3</span><p>選擇 <strong>「加入主畫面」</strong>，再點「加入」。</p></div>
+            <div><span>1</span><p>先複製下方的 YOMIO 網址，再打開 <strong>Safari</strong> 並貼上網址。</p></div>
+            <div><span>2</span><p>在 Safari 打開網站後，點選 Safari 自己的 <strong>分享</strong> 按鈕。</p></div>
+            <div><span>3</span><p>往下找到 <strong>「加入主畫面」</strong>，再點「加入」。</p></div>
           </> : isAndroid ? <>
             <div><span>1</span><p>使用 <strong>Chrome</strong> 開啟 YOMIO。</p></div>
             <div><span>2</span><p>點選瀏覽器的 <strong>選單（⋮）</strong>。</p></div>
@@ -151,10 +151,19 @@ export default function AppSharing() {
       {installPrompt && !standalone && <button type="button" className="appInstallDirect" onClick={installApp}>
         <Download size={18}/> 立即安裝到這台裝置
       </button>}
-      <button type="button" className="appInstallCopy" onClick={copyLink}>
-        <Copy size={17}/> 複製安裝連結
-      </button>
-      <p className="appConnectFootnote">iPhone 需透過 Safari 的「加入主畫面」完成安裝，網頁無法直接代替你按下安裝。</p>
+      <div className="appSafariGuide">
+        {isIOS && <p className="appConnectDescription">iPhone 的「分享 App」選單不一定會列出 Safari。要在 Safari 使用「加入主畫面」，請先複製網址，再手動切換到 Safari 開啟。</p>}
+        <div className="appSafariActions">
+          <button type="button" className="appInstallCopy" onClick={copyLink}>
+            <Copy size={17}/> {isIOS?'複製網址，貼到 Safari':'複製安裝連結'}
+          </button>
+          <a className="appTryBrowser" href={url} target="_blank" rel="noopener noreferrer" aria-label="嘗試在瀏覽器開啟 YOMIO（由系統決定瀏覽器）">
+            <Globe size={17}/> 嘗試開啟瀏覽器 <ArrowUpRight size={15}/>
+          </a>
+        </div>
+        {isIOS && <p className="appConnectFootnote">「嘗試開啟瀏覽器」不保證會跳到 Safari；若仍停留在 YOMIO App，請使用上方的複製網址方法。</p>}
+      </div>
+      <p className="appConnectFootnote">iPhone 請使用 Safari 的「加入主畫面」功能；YOMIO 無法強制讓 Safari 出現在系統分享清單，也無法代替使用者按下安裝。</p>
     </section>
   </>;
 }
