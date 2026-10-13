@@ -1,4 +1,4 @@
-name: Deploy Kana Journey
+name: Deploy YOMIO
 on:
   push:
     branches: [main]
