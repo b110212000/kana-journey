@@ -6,9 +6,10 @@ import {gradedWords} from './vocabulary';
 import {speak,preloadKana} from './audio';
 import './app.css';
 import './ios.css';
+import './yomio.css';
 
 const VERSION='1.3.0';
-const APP_ICON=`${import.meta.env.BASE_URL}icon.svg`;
+const APP_ICON=`${import.meta.env.BASE_URL}icon.svg?v=130`;
 const KEY='kana-journey-v1';
 const families=[
   {name:'あ行',from:0,to:5},{name:'か行',from:5,to:10},
