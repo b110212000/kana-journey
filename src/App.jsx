@@ -1,5 +1,6 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {House, BookOpen, Layers3, ClipboardCheck, Settings2, ChevronRight, Sun, Moon, Share2, Info} from 'lucide-react';
+import {House, BookOpen, Layers3, ClipboardCheck, Settings2, ChevronRight, Sun, Moon, Share2, Info, Trophy, History, Download, RotateCcw} from 'lucide-react';
+import {scorePercent,scoreDate,shareScore,downloadScoreImage} from './share';
 import {hira,kata,romaji,words} from './data';
 import {levels,questionBank} from './questions';
 import {gradedWords} from './vocabulary';
@@ -7,8 +8,9 @@ import {speak,preloadKana} from './audio';
 import './app.css';
 import './ios.css';
 import './yomio.css';
+import './quiz.css';
 
-const VERSION='1.3.0';
+const VERSION='1.4.0';
 const APP_ICON=`${import.meta.env.BASE_URL}icon.svg?v=130`;
 const KEY='kana-journey-v1';
 const families=[
@@ -50,6 +52,11 @@ function App(){
  const [db,setDb]=useState(getSaved);
  const [tab,setTab]=useState('home');
  const contentRef=useRef(null);
+ const completedRunRef=useRef(null);
+ const [quizPanel,setQuizPanel]=useState('practice');
+ const [sessionId,setSessionId]=useState(null);
+ const [latestResult,setLatestResult]=useState(null);
+ const [shareStatus,setShareStatus]=useState('');
  const theme=db.theme==='dark'?'dark':'light';
  useEffect(()=>{
   document.documentElement.dataset.theme=theme;
@@ -80,6 +87,8 @@ function App(){
  const selectedWords=level==='初階'?words.map(w=>({jp:w.jp,kana:w.reading,zh:w.zh,example:'',meaning:'',level:'初階'})):gradedWords.filter(x=>x.level===level);
  const word=selectedWords[wordIndex%selectedWords.length];
  const learned=db.learned||{},wrong=db.wrong||{},stats=db.stats||{};
+ const quizHistory=Array.isArray(db.quizHistory)?db.quizHistory:[];
+ const currentResult=latestResult||quizHistory.find(item=>item.id===sessionId);
  const success=stats.total?Math.round((stats.correct||0)/stats.total*100):0;
  const studied=starterKana.filter(x=>(learned[(x.key.startsWith('h-')?'h':'k')+x.key.slice(1)]||0)>0).length;
  const filteredPool=useMemo(()=>getLevelPool(level),[level]);
@@ -134,11 +143,12 @@ function App(){
    </nav>
    <div className="sidebarFoot">每天 30 分鐘，持續一點點進步</div>
   </aside>
-  <main className="content" ref={contentRef} id="app-scroll">
+  <main className="content">
    <header className="appTop">
     <div className="appTitle"><img src={APP_ICON} alt="" className="headerIcon"/><div><span className="smallOverline">YOMIO · JAPANESE LEARNING</span><h1>{({home:'今天也來學日文',learn:level==='初階'?'五十音學習':'課程學習',words:'單字練習',quiz:'隨機測驗',settings:'設定'})[tab]}</h1></div></div>
     {tab!=='settings'&&<button className="headerSettings" type="button" aria-label="開啟設定" onClick={()=>go('settings')}><Settings2 size={22}/></button>}
    </header>
+   <div className="contentScroll" ref={contentRef} id="app-scroll">
    {tab==='home'&&<section className="page">
     <div className="heroSimple"><div><span className="eyebrow">YOMIO · DAILY LEARNING</span><h2>每天一點，<br/>日文更近一點。</h2><p>從五十音開始，輕鬆走向日常對話。</p></div><img className="heroBrandMark" src={APP_ICON} alt="YOMIO 標誌"/></div>
     <div className="sectionHeading"><div><h2>繼續你的學習</h2><p>今天先完成一個小目標。</p></div></div>
@@ -212,6 +222,7 @@ function App(){
       </div>
      </section>}
    <footer>YOMIO · 學習資料儲存於此裝置・題目為原創練習題，非 JLPT 官方歷屆試題・<a href="https://www.jlpt.jp/tw/samples/sampleindex.html" target="_blank" rel="noreferrer">官方樣題</a></footer>
+  </div>
   </main>
  </div>;
 
