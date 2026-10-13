@@ -54,7 +54,7 @@ function App(){
  useEffect(()=>{
   document.documentElement.dataset.theme=theme;
   document.documentElement.style.colorScheme=theme;
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#101A24':'#F7F9F8');
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#101F25':'#F5F9F7');
  },[theme]);
  const [level,setLevel]=useState(db.selectedLevel||'初階');
  const [script,setScript]=useState('平假名');
