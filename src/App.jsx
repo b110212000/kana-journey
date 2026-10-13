@@ -9,8 +9,9 @@ import './app.css';
 import './ios.css';
 import './yomio.css';
 import './quiz.css';
+import AppSharing from './AppSharing';
 
-const VERSION='1.4.0';
+const VERSION='1.5.0';
 const APP_ICON=`${import.meta.env.BASE_URL}icon.svg?v=130`;
 const KEY='kana-journey-v1';
 const families=[
@@ -253,11 +254,7 @@ function App(){
         <button type="button" className={theme==='dark'?'selected':''} onClick={()=>changeTheme('dark')} aria-pressed={theme==='dark'}><Moon size={19}/> 深色模式</button>
        </div>
       </div>
-      <div className="settingsGroup">
-       <div className="settingsHeading"><Share2 size={19}/><span>安裝到 iPhone</span></div>
-       <p className="installInstructions">使用 Safari 開啟本網站，點選「分享」，再選「加入主畫面」，就能從桌面圖示啟動 YOMIO。</p>
-       <div className="installHint">加入主畫面後會以獨立 App 視窗開啟，不需要 App Store。</div>
-      </div>
+      <AppSharing/>
       <div className="settingsGroup">
        <div className="settingsHeading"><Info size={19}/><span>關於 App</span></div>
        <div className="settingsRow"><span>應用程式</span><strong>YOMIO</strong></div>
