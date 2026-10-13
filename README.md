@@ -1,4 +1,4 @@
-# Kana Journey v1.2.0
+# YOMIO v1.3.0
 
 以手機優先的日文學習網頁 App：一次學一小組五十音、一次練一張單字卡、一次回答一道測驗。透過 GitHub Pages 發佈，無後端及 AI Token。
 
@@ -43,7 +43,7 @@ https://b110212000.github.io/kana-journey/
 新增功能提升次版本；介面微調及 Bug 修復提升修訂版本。
 
 ## iPhone App 介面（v1.2.0）
-- 新增獨立的 Kana Journey App 圖示（SVG 原始檔），透過 `sharp` 自動產生 iPhone `apple-touch-icon.png`、192 / 512px PWA 圖示及小圖示。
+- 新增獨立的 YOMIO App 圖示（SVG 原始檔），透過 `sharp` 自動產生 iPhone `apple-touch-icon.png`、192 / 512px PWA 圖示及小圖示。
 - `public/manifest.webmanifest` 設定 standalone PWA、名稱、啟動畫面與圖示。
 - 手機標題列固定於內容區頂部，捲動僅發生在內容區，不影響底部分頁。
 - 使用 `viewport-fit=cover` 和 `env(safe-area-inset-top/bottom)`，適配 iPhone 動態島、瀏海及 Home Indicator。
@@ -53,3 +53,14 @@ https://b110212000.github.io/kana-journey/
 
 圖示來源檔：`public/icon.svg`。輸出 PNG 在 `npm run build` 期間由 `scripts/generate-icons.mjs` 產生。
 目前未新增 Service Worker，iPhone 可以加入主畫面並以獨立模式開啟，但不保證離線使用。
+
+
+## 品牌更新（v1.3.0）
+- 品牌名稱由 Kana Journey 更新為 **YOMIO**；目前仍使用原 GitHub 專案 `b110212000/kana-journey` 和原網址，以避免 GitHub Pages 路徑變動。
+- 以已確定的「書頁／葉片＋晨光」視覺概念建立可縮放 SVG：`public/icon.svg`（App 圖示）、`public/brand.svg`（品牌字標組合）。
+- GitHub Actions 建置時，以 `sharp` 從 SVG 重新產生 iPhone 的 `apple-touch-icon.png`、192 / 512px PWA 圖示。
+- 網頁標題、Apple standalone App 名稱、PWA manifest 與品牌文案統一為 YOMIO；保留 manifest 的 `id` / `scope` / `start_url`，避免既有安裝入口失效。
+- 主題色統一為 Logo 的深綠、薄荷綠與暖黃色；兩種配色模式均適用，並沿用 iPhone 動態島及底部 Home Indicator 的安全區域。
+- **學習資料相容**：沿用 `kana-journey-v1` localStorage key，保留既有進度與設定，沒有重設資料。
+- iPhone 若仍看到舊主畫面圖示，請在 Safari 開啟最新網址後再次「加入主畫面」，必要時先移除舊捷徑。移除 PWA 前請注意學習紀錄只儲存在此裝置，尚未有雲端同步。
+- 目前主要是 PWA / 加入主畫面版本，**不是**上架 App Store 的原生 iOS App。
