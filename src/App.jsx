@@ -94,6 +94,10 @@ function App(){
    if(wrongOnly){
      const ids=new Set(Object.entries(wrong).filter(([,n])=>n>0).map(([id])=>id));
      all=all.filter(q=>ids.has(q.id));
+   }else if(level==='初階' && withFocus!=='單字'){
+     // 初階從目前學習的假名行出題，不會剛開始就考整張表。
+     const allowed=new Set(row.map(x=>x.id));
+     all=all.filter(q=>q.type==='假名' && [...allowed].some(id=>q.id.endsWith(id)));
    }else if(withFocus!=='全部') all=all.filter(q=>q.type===withFocus);
    const quiz=shuffled(all).slice(0,10).map(q=>({...q,options:shuffled(q.options)}));
    setPaper(quiz);setAt(0);setPicked(null);setCorrectInRound(0);setReviewMode(wrongOnly);
@@ -153,7 +157,7 @@ function App(){
    {tab==='quiz'&&<section className="page narrow"><div className="quizHeader">
     <div><span className="eyebrow">PRACTICE ・ {level}</span><h2>一題一題，專心思考</h2><p>單次最多 10 題，題目與選項都會重新隨機排列。</p></div>
    </div>
-   {!paper.length?<div className="testSetup"><h3>準備開始 {level} 練習</h3><div className="chipGroup">{topics.map(type=><button key={type} className={focus===type?'active':''} onClick={()=>setFocus(type)}>{type}</button>)}</div><p className="muted">選擇題型，不想限制就選「全部」。</p><button className="primary" onClick={()=>begin(false)}>開始隨機測驗 →</button>
+   {!paper.length?<div className="testSetup"><h3>準備開始 {level} 練習</h3><div className="chipGroup">{topics.map(type=><button key={type} className={focus===type?'active':''} onClick={()=>setFocus(type)}>{type}</button>)}</div><p className="muted">{level==='初階'?'初階預設從目前學習的 '+rowInfo.name+' 出題；選「單字」可練生活單字。':'選擇題型，不想限制就選「全部」。'}</p><button className="primary" onClick={()=>begin(false)}>開始隨機測驗 →</button>
     <div className="testDivider"/><div className="retryBox"><span>錯題再練一次</span><strong>{filteredPool.filter(q=>(wrong[q.id]||0)>0).length} 題待複習</strong><button onClick={()=>begin(true)} disabled={!filteredPool.some(q=>(wrong[q.id]||0)>0)}>重練錯題</button></div></div>
    : sessionDone?<div className="resultCard"><span className="eyebrow">{reviewMode?'錯題練習':'本回合完成'}</span><div className="resultScore">{correctInRound} <small>/ {paper.length}</small></div><h3>{correctInRound===paper.length?'太棒了，全部答對！':'完成一回合，繼續進步！'}</h3><p>錯誤題目已加入複習記錄；下次可以單獨重練。</p><button className="primary" onClick={()=>begin(false)}>再來一回合 →</button><button className="bare" onClick={()=>{setPaper([]);setSessionDone(false)}}>調整題型</button></div>
    :<div className="testCard"><div className="quizMeta"><span>{at+1} / {paper.length} 題</span><span>{issue.type}</span></div><div className="progressBar"><div style={{width:progress+'%'}}/></div>
