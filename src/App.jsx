@@ -166,7 +166,7 @@ function App(){
   </aside>
   <main className="content">
    <header className="appTop">
-    <div className="appTitle"><img src={APP_ICON} alt="" className="headerIcon"/><div><span className="smallOverline">YOMIO · JAPANESE LEARNING</span><h1>{({home:'今天也來學日文',learn:level==='初階'?'五十音學習':'課程學習',words:'單字練習',quiz:'隨機測驗',settings:'設定'})[tab]}</h1></div></div>
+    <div className="appTitle"><img src={APP_ICON} alt="" className="headerIcon"/><div><span className="smallOverline">YOMIO · JAPANESE LEARNING</span><h1>{({home:'今天也來學日文',learn:level==='初階'?'五十音學習':'課程學習',words:'單字練習',quiz:quizPanel==='history'?'測驗紀錄':'隨機測驗',settings:'設定'})[tab]}</h1></div></div>
     {tab!=='settings'&&<button className="headerSettings" type="button" aria-label="開啟設定" onClick={()=>go('settings')}><Settings2 size={22}/></button>}
    </header>
    <div className="contentScroll" ref={contentRef} id="app-scroll">
@@ -176,6 +176,7 @@ function App(){
     <button className="levelShortcut" onClick={()=>go('settings')} aria-label="前往設定調整目前程度"><span className="levelSymbol">文</span><span><small>目前程度</small><strong>{level}・{levels.find(x=>x.id===level)?.subtitle}</strong></span><ChevronRight size={19}/></button>
     <div className="actionPair"><button className="routeCard" onClick={()=>go('learn')}><span className="routeIcon">あ</span><strong>{level==='初階'?'學習五十音':'本級重點單字'}</strong><span>循序學習・每次一小組</span><b>開始學習 →</b></button><button className="routeCard" onClick={()=>beginQuizFromHome()}><span className="routeIcon warm">✓</span><strong>今天的 10 題練習</strong><span>題目和選項隨機排列</span><b>開始測驗 →</b></button></div>
     <div className="miniStats"><span>已作答 <strong>{stats.total||0}</strong> 題</span><span>正確率 <strong>{success}%</strong></span><span>待複習 <strong>{Object.values(wrong).filter(n=>n>0).length}</strong> 題</span></div>
+    {quizHistory.length>0&&<button className="latestScoreShortcut" onClick={()=>{setQuizPanel('history');go('quiz')}}><span className="latestScoreIcon"><Trophy size={23}/></span><span><strong>我的測驗紀錄</strong><small>已完成 {quizHistory.length} 回合，最近一次 {scorePercent(quizHistory[0])}%</small></span><ChevronRight size={18}/></button>}
    </section>}
    {tab==='learn'&&<section className="page narrow">
     {level!=='初階'?<><div className="lessonTitle"><span className="eyebrow">LEVEL {level}</span><h2>先認識這一級的常用單字</h2><p>一次一張單字卡，學會後再練習題目。</p></div><WordFlashCard word={word} position={wordIndex} total={selectedWords.length} reveal={reveal} setReveal={setReveal} onPlay={play} onNext={()=>{setWordIndex(i=>(i+1)%selectedWords.length);setReveal(false)}} onPrev={()=>{setWordIndex(i=>(i-1+selectedWords.length)%selectedWords.length);setReveal(false)}}/><button className="secondaryWide" onClick={()=>go('quiz')}>接著做 {level} 測驗 →</button></>:
