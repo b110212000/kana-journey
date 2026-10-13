@@ -1,5 +1,5 @@
 // 每個程度的練習用例句均為專案編寫，不使用官方試題內容。
-import {expandedWords} from './vocabularyExpansion';
+import {expandedWords} from './vocabularyExpansion.js';
 
 const baseWords = [
   {
