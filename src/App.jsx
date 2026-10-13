@@ -3,6 +3,7 @@ import {House, BookOpen, Layers3, ClipboardCheck, Settings2, ChevronRight, Sun, 
 import {scorePercent,scoreDate,shareScore,downloadScoreImage} from './share';
 import {hira,kata,romaji,words} from './data';
 import {levels,questionBank} from './questions';
+import {pickQuiz,recordQuizSeen} from './quizRotation';
 import {gradedWords} from './vocabulary';
 import {speak,preloadKana} from './audio';
 import './app.css';
@@ -148,10 +149,14 @@ function App(){
      const allowed=new Set(row.map(x=>x.id));
      all=all.filter(q=>q.type==='假名' && [...allowed].some(id=>q.id.endsWith(id)));
    }else if(withFocus!=='全部') all=all.filter(q=>q.type===withFocus);
-   const quiz=shuffled(all).slice(0,10).map(q=>({...q,options:shuffled(q.options)}));
+   const rotationKey=level+':'+(wrongOnly?'review':withFocus)+(level==='初階'&&withFocus!=='單字'?':'+script+':'+family:'');
+   const availableIds=all.map(q=>q.id);
+   const recent=Array.isArray(db.quizSeen?.[rotationKey])?db.quizSeen[rotationKey]:[];
+   const quiz=pickQuiz(all,recent,10).map(q=>({...q,options:shuffled(q.options)}));
+   if(!quiz.length){notify('目前沒有符合條件的題目，請換個題型。','error');return}
    setPaper(quiz);setAt(0);setPicked(null);setCorrectInRound(0);setReviewMode(wrongOnly);
    setSessionId('run-'+Date.now()+'-'+Math.random().toString(36).slice(2,7));
-   setSessionMeta({level,category:wrongOnly?'錯題複習':withFocus});
+   setSessionMeta({level,category:wrongOnly?'錯題複習':withFocus,rotationKey,availableIds});
    setLatestResult(null);completedRunRef.current=null;
    setQuizPanel('practice');setSessionDone(false);go('quiz');
  }
@@ -177,7 +182,15 @@ function App(){
      setDb(old=>{
        const history=Array.isArray(old.quizHistory)?old.quizHistory:[];
        if(history.some(r=>r.id===item.id))return old;
-       return {...old,quizHistory:[item,...history].slice(0,200)};
+       const key=sessionMeta?.rotationKey;
+       return {
+         ...old,
+         quizHistory:[item,...history].slice(0,200),
+         quizSeen:key?{
+           ...old.quizSeen,
+           [key]:recordQuizSeen(old.quizSeen?.[key]||[],sessionMeta.availableIds,paper.map(q=>q.id))
+         }:old.quizSeen
+       };
      });
      setLatestResult(item);setSessionDone(true);setPicked(null);
      notify('成績已存入測驗紀錄。');
@@ -229,7 +242,12 @@ function App(){
    </section>}
    {tab==='words'&&<section className="page narrow"><div className="lessonTitle"><span className="eyebrow">{level}・單字卡</span><h2>少量多次，比一次背完有效</h2><p>先試著認讀，點開答案再看意思和例句。</p></div><WordFlashCard word={word} position={wordIndex} total={selectedWords.length} reveal={reveal} setReveal={setReveal} onPlay={play} onNext={()=>{setWordIndex(i=>(i+1)%selectedWords.length);setReveal(false)}} onPrev={()=>{setWordIndex(i=>(i-1+selectedWords.length)%selectedWords.length);setReveal(false)}}/><button className="secondaryWide" onClick={()=>go('quiz')}>使用 {level} 題庫測驗 →</button></section>}
    {tab==='quiz'&&<section className="page narrow"><div className="quizHeader">
-    <div><span className="eyebrow">PRACTICE ・ {level}</span><h2>一題一題，專心思考</h2><p>單次最多 10 題，題目與選項都會重新隨機排列。</p></div>
+    <div><span className="eyebrow">PRACTICE ・ {level}</span><h2>一題一題，專心思考</h2><p>每回合最多 10 題，優先抽還沒練過的題目。</p>
+    <div className="quizBankInfo">
+     {level==='初階'?<>五十音與生活單字合計 {filteredPool.length} 題；目前假名行 {row.length*2} 題</>:
+     <>本級題庫 <strong>{filteredPool.length}</strong> 題 · {['單字','文法','讀解'].map(t=>t+' '+filteredPool.filter(q=>q.type===t).length).join(' · ')}</>}
+    </div>
+    </div>
    </div>
    <div className="quizTabs" role="group" aria-label="測驗與歷史紀錄">
     <button type="button" className={quizPanel==='practice'?'selected':''} aria-pressed={quizPanel==='practice'} onClick={()=>selectQuizPanel('practice')}><ClipboardCheck size={17}/> 開始測驗</button>
