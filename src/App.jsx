@@ -243,10 +243,6 @@ function App(){
    {tab==='words'&&<section className="page narrow"><div className="lessonTitle"><span className="eyebrow">{level}・單字卡</span><h2>少量多次，比一次背完有效</h2><p>先試著認讀，點開答案再看意思和例句。</p></div><WordFlashCard word={word} position={wordIndex} total={selectedWords.length} reveal={reveal} setReveal={setReveal} onPlay={play} onNext={()=>{setWordIndex(i=>(i+1)%selectedWords.length);setReveal(false)}} onPrev={()=>{setWordIndex(i=>(i-1+selectedWords.length)%selectedWords.length);setReveal(false)}}/><button className="secondaryWide" onClick={()=>go('quiz')}>使用 {level} 題庫測驗 →</button></section>}
    {tab==='quiz'&&<section className="page narrow"><div className="quizHeader">
     <div><span className="eyebrow">PRACTICE ・ {level}</span><h2>一題一題，專心思考</h2><p>每回合最多 10 題，優先抽還沒練過的題目。</p>
-    <div className="quizBankInfo">
-     {level==='初階'?<>五十音與生活單字合計 {filteredPool.length} 題；目前假名行 {row.length*2} 題</>:
-     <>本級題庫 <strong>{filteredPool.length}</strong> 題 · {['單字','文法','讀解'].map(t=>t+' '+filteredPool.filter(q=>q.type===t).length).join(' · ')}</>}
-    </div>
     </div>
    </div>
    <div className="quizTabs" role="group" aria-label="測驗與歷史紀錄">
@@ -281,6 +277,7 @@ function App(){
    {tab==='settings'&&<SettingsView
     level={level} levels={levels} onLevelChange={changeLevel}
     theme={theme} onThemeChange={changeTheme} appIcon={APP_ICON}
+    questionBank={questionBank} starterQuestionCount={starterPool().length}
     version={VERSION} update={update}
     open={settingsOpen} onToggle={setSettingsOpen}/>}
    <footer>YOMIO · 學習資料儲存於此裝置・題目為原創練習題，非 JLPT 官方歷屆試題・<a href="https://www.jlpt.jp/tw/samples/sampleindex.html" target="_blank" rel="noreferrer">官方樣題</a></footer>
