@@ -97,7 +97,8 @@ function App(){
  const progress=paper.length?Math.round(100*at/paper.length):0;
  const go=next=>{setTab(next);setAudioStatus('idle');setAudioNote(false);if(contentRef.current)contentRef.current.scrollTop=0};
  const changeTheme=next=>setDb(old=>({...old,theme:next}));
- const changeLevel=next=>{setLevel(next);setFocus('全部');setWordIndex(0);setPaper([]);setSessionDone(false);setPicked(null);setReviewMode(false)};
+ const changeLevel=next=>{setLevel(next);setFocus('全部');setWordIndex(0);setPaper([]);setSessionDone(false);setPicked(null);setReviewMode(false);setQuizPanel('practice')};
+ const shareResult=async result=>{if(!result)return;setShareStatus('');try{const status=await shareScore(result);if(status==='copied')setShareStatus('成績文字已複製，可以貼到 LINE 或訊息。');if(status==='downloaded')setShareStatus('已建立成績圖片，可以再分享給朋友。')}catch{setShareStatus('無法開啟分享功能，請改用儲存圖片。')}};
  const chooseFamily=i=>{setFamily(i);setCard(0);setAudioStatus('idle')};
  useEffect(()=>{if(tab==='learn' && level==='初階')preloadKana(row.map(x=>x.char))},[tab,script,family,level]);
  const play=(text)=>speak(text,setAudioStatus);
@@ -122,7 +123,9 @@ function App(){
    }else if(withFocus!=='全部') all=all.filter(q=>q.type===withFocus);
    const quiz=shuffled(all).slice(0,10).map(q=>({...q,options:shuffled(q.options)}));
    setPaper(quiz);setAt(0);setPicked(null);setCorrectInRound(0);setReviewMode(wrongOnly);
-   setSessionDone(false);go('quiz');
+   setSessionId('run-'+Date.now()+'-'+Math.random().toString(36).slice(2,7));
+   setLatestResult(null);setShareStatus('');completedRunRef.current=null;
+   setQuizPanel('practice');setSessionDone(false);go('quiz');
  }
  function answer(value){
    if(picked!==null)return;
@@ -131,8 +134,26 @@ function App(){
    setCorrectInRound(n=>n+(good?1:0));record(good);
  }
  function next(){
-   if(at+1>=paper.length){setSessionDone(true);setPicked(null)}
-   else {setAt(x=>x+1);setPicked(null)}
+   if(at+1>=paper.length){
+     if(!paper.length||sessionDone||completedRunRef.current===sessionId)return;
+     completedRunRef.current=sessionId;
+     const item={
+       id:sessionId||'run-'+Date.now(),
+       date:Date.now(),
+       level,
+       correct:correctInRound,
+       total:paper.length,
+       mode:reviewMode?'review':'practice',
+       category:reviewMode?'錯題複習':focus
+     };
+     setDb(old=>{
+       const history=Array.isArray(old.quizHistory)?old.quizHistory:[];
+       if(history.some(r=>r.id===item.id))return old;
+       return {...old,quizHistory:[item,...history].slice(0,200)};
+     });
+     setLatestResult(item);setSessionDone(true);setPicked(null);
+     setShareStatus('');
+   }else {setAt(x=>x+1);setPicked(null)}
  }
  function navButton(key,title,glyph){return <button key={key} type="button" aria-current={tab===key?'page':undefined} className={'navButton '+(tab===key?'current':'')} onClick={()=>go(key)}><span className="navIcon" aria-hidden="true">{glyph}</span><span>{title}</span></button>}
  return <div className="app">
