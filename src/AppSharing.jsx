@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Check, Copy, Download, ExternalLink, PlusSquare, Share2, Smartphone} from 'lucide-react';
 import './sharing.css';
+import {useToast} from './ToastProvider';
 
 const appUrl = () => new URL(import.meta.env.BASE_URL, window.location.origin).href;
 
@@ -46,34 +47,34 @@ export default function AppSharing() {
   const standalone = window.matchMedia('(display-mode: standalone)').matches ||
     navigator.standalone === true;
   const [installPrompt, setInstallPrompt] = useState(cachedInstallPrompt);
-  const [message, setMessage] = useState({section:'',text:'',success:false});
+  const notify = useToast();
 
   useEffect(() => {
     promptListeners.add(setInstallPrompt);
     return () => promptListeners.delete(setInstallPrompt);
   }, []);
 
-  async function copyLink(section) {
+  async function copyLink() {
     try {
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(url);
       } else if (!copyFallback(url)) {
         throw new Error('Copy not available');
       }
-      setMessage({section,text:'連結已複製！可以貼給朋友或傳到 LINE。',success:true});
+      notify('連結已複製！可以貼給朋友或傳到 LINE。');
     } catch {
       try {
         if (!copyFallback(url)) throw new Error('Fallback copy failed');
-        setMessage({section,text:'連結已複製！可以貼給朋友或傳到 LINE。',success:true});
+        notify('連結已複製！可以貼給朋友或傳到 LINE。');
       } catch {
-        setMessage({section,text:'目前無法自動複製，請長按上方網址並選擇「複製」。',success:false});
+        notify('目前無法自動複製，請長按上方網址選擇「複製」。', 'error');
       }
     }
   }
 
   async function shareLink() {
     if (typeof navigator.share !== 'function') {
-      await copyLink('share');
+      await copyLink();
       return;
     }
     try {
@@ -82,10 +83,10 @@ export default function AppSharing() {
         text:'一起用 YOMIO 學日文！從五十音到 JLPT 分級練習。',
         url
       });
-      setMessage({section:'share',text:'已透過系統分享功能傳送連結。',success:true});
+      notify('已完成系統分享操作。');
     } catch (error) {
       if (error?.name === 'AbortError') return;
-      setMessage({section:'share',text:'無法開啟系統分享，請使用「複製連結」。',success:false});
+      notify('無法開啟系統分享，請使用「複製連結」。', 'error');
     }
   }
 
@@ -95,22 +96,16 @@ export default function AppSharing() {
       await installPrompt.prompt();
       const choice = await installPrompt.userChoice;
       if (choice?.outcome === 'accepted') {
-        setMessage({section:'install',text:'已送出安裝要求，請依裝置提示完成。',success:true});
+        notify('已送出安裝要求，請依裝置提示完成。');
       }
     } catch {
-      setMessage({section:'install',text:'無法直接開啟安裝提示，請使用瀏覽器選單操作。',success:false});
+      notify('無法開啟安裝提示，請使用瀏覽器選單操作。', 'error');
     } finally {
       cachedInstallPrompt = null;
       setInstallPrompt(null);
     }
   }
 
-  const feedback = (section) => message.section === section && message.text
-    ? <p className={'appConnectFeedback '+(message.success?'ok':'')} role="status" aria-live="polite">
-        {message.success && <Check size={16}/>}
-        {message.text}
-      </p>
-    : null;
 
   return <>
     <section className="settingsGroup appConnectGroup">
@@ -125,11 +120,10 @@ export default function AppSharing() {
         <button type="button" className="appConnectPrimary" onClick={shareLink}>
           <Share2 size={18}/> 分享 App
         </button>
-        <button type="button" className="appConnectSecondary" onClick={()=>copyLink('share')}>
+        <button type="button" className="appConnectSecondary" onClick={copyLink}>
           <Copy size={18}/> 複製連結
         </button>
       </div>
-      {feedback('share')}
     </section>
 
     <section className="settingsGroup appConnectGroup">
@@ -157,10 +151,9 @@ export default function AppSharing() {
       {installPrompt && !standalone && <button type="button" className="appInstallDirect" onClick={installApp}>
         <Download size={18}/> 立即安裝到這台裝置
       </button>}
-      <button type="button" className="appInstallCopy" onClick={()=>copyLink('install')}>
+      <button type="button" className="appInstallCopy" onClick={copyLink}>
         <Copy size={17}/> 複製安裝連結
       </button>
-      {feedback('install')}
       <p className="appConnectFootnote">iPhone 需透過 Safari 的「加入主畫面」完成安裝，網頁無法直接代替你按下安裝。</p>
     </section>
   </>;
