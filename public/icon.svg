@@ -1,23 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Kana Journey">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="YOMIO App">
 <defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#27B99B"/><stop offset=".53" stop-color="#0F947D"/><stop offset="1" stop-color="#076F78"/>
-  </linearGradient>
-  <linearGradient id="paper" x1="0" y1="0" x2="0.8" y2="1">
-    <stop stop-color="#FFFFFF"/><stop offset="1" stop-color="#F3FDF8"/>
-  </linearGradient>
-  <filter id="shade" x="-30%" y="-30%" width="160%" height="180%">
-    <feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#03585B" flood-opacity=".32"/>
-  </filter>
+ <linearGradient id="back" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#106E75"/><stop offset=".55" stop-color="#08756C"/><stop offset="1" stop-color="#07565A"/></linearGradient>
+ <linearGradient id="leafL" x1=".13" y1=".12" x2=".91" y2=".92"><stop stop-color="#49DBCD"/><stop offset=".56" stop-color="#15AB9B"/><stop offset="1" stop-color="#05756E"/></linearGradient>
+ <linearGradient id="leafShadow" x1=".05" y1=".9" x2=".9" y2=".22"><stop stop-color="#024B54"/><stop offset="1" stop-color="#0B8B83"/></linearGradient>
+ <linearGradient id="leafR" x1=".2" y1=".1" x2=".87" y2=".95"><stop stop-color="#F4FFF5"/><stop offset=".54" stop-color="#DDF9EB"/><stop offset="1" stop-color="#92E4C8"/></linearGradient>
+ <linearGradient id="sun" x1="0" y1="0" x2=".85" y2="1"><stop stop-color="#FFE9A4"/><stop offset="1" stop-color="#FFC16B"/></linearGradient>
 </defs>
-<rect width="512" height="512" rx="116" fill="url(#bg)"/>
-<path d="M-30 414C99 310 190 418 290 358S430 277 548 354V555H-30Z" fill="#FFFFFF" opacity=".08"/>
-<circle cx="408" cy="107" r="45" fill="#F5D5A7"/>
-<path d="M360 74q24-24 45-6-12 22-45 6Z" fill="#FFF4DE" opacity=".75"/>
-<g filter="url(#shade)" transform="rotate(-7 256 256)">
-  <rect x="104" y="115" width="300" height="295" rx="61" fill="url(#paper)"/>
-  <text x="254" y="333" text-anchor="middle" font-family="'Hiragino Kaku Gothic ProN','Noto Sans JP','Yu Gothic',sans-serif" font-weight="700" font-size="212" fill="#0A887D">あ</text>
-</g>
-<circle cx="404" cy="399" r="34" fill="#F4C885"/>
-<path d="M389 398l11 11 21-24" fill="none" stroke="#136E68" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+<rect width="512" height="512" rx="113" fill="url(#back)"/>
+<circle cx="257" cy="163" r="69" fill="url(#sun)"/>
+<path d="M259 422 C225 354 157 340 111 301 C67 265 63 194 72 139 C126 137 207 179 258 251 C289 295 298 372 274 422 Q266 442 259 422Z" fill="url(#leafL)"/>
+<path d="M74 215 C95 292 162 306 219 334 C252 350 271 388 269 428 C238 414 227 372 181 351 C101 318 72 269 74 215Z" fill="url(#leafShadow)" opacity=".94"/>
+<path d="M258 423 C258 341 289 280 355 215 C384 185 425 155 445 142 C452 217 439 258 396 292 C344 330 288 351 274 422 Q264 447 258 423Z" fill="url(#leafR)"/>
+<path d="M277 359 C311 294 364 280 411 258 C432 245 442 220 446 207 C439 269 402 294 363 311 C319 333 295 361 274 423 C272 402 272 380 277 359Z" fill="#087A75"/>
 </svg>
