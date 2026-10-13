@@ -1,3 +1,6 @@
+import {generateVocabularyQuestions} from './quizGenerator';
+import {extraQuestions} from './grammarReadingExpansion';
+
 // JLPT 題型參考官方公開題目構成，所有題目與解析均為本專案原創，非歷屆試題逐字重製。
 export const levels = [
  {id:'初階',subtitle:'五十音 · 基本單字',description:'從字形、發音到認識第一批日常詞彙'},
@@ -7,7 +10,7 @@ export const levels = [
  {id:'N2',subtitle:'實用職場',description:'抽象語彙與進階語法'},
  {id:'N1',subtitle:'高階理解',description:'細膩語意及抽象論述'}
 ];
-export const questionBank = {
+const originalQuestionBank = {
   "N5": [
     {
       "id": "N5-1",
@@ -799,3 +802,15 @@ export const questionBank = {
     }
   ]
 };
+
+
+// Each N-level now has 12 legacy + 12 new grammar/reading +
+ // 40 words × 2 directions = 104 questions per level (520 in total).
+ // Legacy question IDs remain untouched, preserving existing wrong-answer data.
+export const questionBank = Object.fromEntries(
+  ['N5','N4','N3','N2','N1'].map(level => [level, [
+    ...originalQuestionBank[level],
+    ...extraQuestions[level],
+    ...generateVocabularyQuestions(level)
+  ]])
+);
