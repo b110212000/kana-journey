@@ -1,0 +1,42 @@
+/* YOMIO shared 3-second notification: independent of header/content scroll. */
+.yomioToastViewport{
+ position:fixed;
+ z-index:1100;
+ top:calc(env(safe-area-inset-top,0px) + 20px);
+ left:50%;
+ transform:translateX(-50%);
+ width:min(420px, calc(100vw - 32px));
+ pointer-events:none;
+}
+.yomioToast{
+ display:flex;
+ align-items:center;
+ gap:11px;
+ width:100%;
+ padding:14px 16px;
+ border:1px solid var(--app-line);
+ border-left:4px solid var(--app-accent);
+ border-radius:14px;
+ color:var(--app-text);
+ background:var(--app-card);
+ box-shadow:0 12px 38px rgba(6,40,42,.18);
+ font-size:13px;
+ font-weight:650;
+ line-height:1.5;
+ overflow-wrap:anywhere;
+ -webkit-backdrop-filter:blur(12px);
+ backdrop-filter:blur(12px);
+ animation:yomioToastEnter .2s ease-out both;
+}
+.yomioToast svg{flex:0 0 auto;color:var(--app-accent)}
+.yomioToast.error{border-left-color:var(--app-error)}
+.yomioToast.error svg{color:var(--app-error)}
+@keyframes yomioToastEnter{
+ from{opacity:0;transform:translateY(-9px)}
+ to{opacity:1;transform:translateY(0)}
+}
+@media(max-width:680px){
+ .yomioToastViewport{top:calc(env(safe-area-inset-top,0px) + 18px);width:calc(100vw - 30px)}
+ .yomioToast{font-size:13px;padding:13px 14px;border-radius:13px}
+}
+@media(prefers-reduced-motion:reduce){.yomioToast{animation:none}}
