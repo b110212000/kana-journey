@@ -1,13 +1,14 @@
 {
   "name": "kana-journey",
   "private": true,
-  "version": "1.6.0",
+  "version": "1.7.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "node scripts/generate-icons.mjs && node scripts/generate-version.mjs && vite build",
+    "build": "npm run test:bank && node scripts/generate-icons.mjs && node scripts/generate-version.mjs && vite build",
     "preview": "vite preview",
-    "predev": "node scripts/generate-icons.mjs && node scripts/generate-version.mjs"
+    "predev": "node scripts/generate-icons.mjs && node scripts/generate-version.mjs",
+    "test:bank": "node scripts/validate-question-bank.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
