@@ -20,6 +20,9 @@ jobs:
           node-version: '22'
       - run: npm install
       - run: npm run build
+      - name: Verify published YOMIO version
+        run: |
+          node --input-type=module -e "import fs from 'node:fs'; const source = JSON.parse(fs.readFileSync('package.json','utf8')); const deployed = JSON.parse(fs.readFileSync('dist/version.json','utf8')); if (source.version !== deployed.version) throw new Error('Version mismatch: ' + deployed.version + ' vs ' + source.version); console.log('Published manifest:', deployed.version);"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
