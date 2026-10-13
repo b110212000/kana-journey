@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="360" viewBox="0 0 900 360" role="img" aria-label="YOMIO">
+<defs>
+ <linearGradient id="leafL" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#48D7C5"/><stop offset=".6" stop-color="#1DB19F"/><stop offset="1" stop-color="#006B66"/></linearGradient>
+ <linearGradient id="leafR" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F4FFF1"/><stop offset="1" stop-color="#A3E6CC"/></linearGradient>
+ <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#FFE49B"/><stop offset="1" stop-color="#FEC070"/></linearGradient>
+</defs>
+<g transform="translate(310 12) scale(.5)">
+<circle cx="257" cy="163" r="69" fill="url(#sun)"/>
+<path d="M259 422 C225 354 157 340 111 301 C67 265 63 194 72 139 C126 137 207 179 258 251 C289 295 298 372 274 422 Q266 442 259 422Z" fill="url(#leafL)"/>
+<path d="M74 215 C95 292 162 306 219 334 C252 350 271 388 269 428 C238 414 227 372 181 351 C101 318 72 269 74 215Z" fill="#035D61" opacity=".75"/>
+<path d="M258 423 C258 341 289 280 355 215 C384 185 425 155 445 142 C452 217 439 258 396 292 C344 330 288 351 274 422 Q264 447 258 423Z" fill="url(#leafR)" stroke="#A6E2CD" stroke-width="2"/>
+<path d="M277 359 C311 294 364 280 411 258 C432 245 442 220 446 207 C439 269 402 294 363 311 C319 333 295 361 274 423 C272 402 272 380 277 359Z" fill="#087A75"/>
+</g>
+<text x="450" y="315" text-anchor="middle" font-family="'Arial Rounded MT Bold', 'Nunito', 'Trebuchet MS', Arial, sans-serif" font-size="104" letter-spacing="12" font-weight="900" fill="#075D59">YOMIO</text>
+</svg>
