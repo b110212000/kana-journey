@@ -108,7 +108,7 @@ export default function AppSharing() {
 
 
   return <>
-    <section className="settingsGroup appConnectGroup">
+    <section className="appConnectGroup">
       <div className="settingsHeading"><Share2 size={19}/><span>分享 YOMIO</span></div>
       <p className="appConnectDescription">邀請朋友一起學日文！你可以開啟手機分享選單，或直接複製網址傳到 LINE。</p>
       <div className="appConnectLink">
@@ -126,7 +126,7 @@ export default function AppSharing() {
       </div>
     </section>
 
-    <section className="settingsGroup appConnectGroup">
+    <section className="appConnectGroup">
       <div className="settingsHeading"><Smartphone size={19}/><span>安裝 YOMIO App</span></div>
       {standalone ? <>
         <div className="appInstalled"><Check size={18}/><strong>目前正以主畫面 App 模式使用 YOMIO</strong></div>
