@@ -18,6 +18,7 @@ const getSaved=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch
 function shuffled(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function options(correct,from){return shuffled([correct,...shuffled([...new Set(from.filter(v=>v!==correct))]).slice(0,3)])}
 const clean=(str)=>str.replace(/[。、！!？?]/g,'');
+const kanaExamples=['あさ','いぬ','うみ','えき','おちゃ','かさ','きく','くるま','けしごむ','こえ','さかな','しお','すし','せかい','そら','たまご','ちず','つき','てがみ','とり','なつ','にく','ぬの','ねこ','のみもの','はな','ひと','ふね','へや','ほん','まど','みず','むし','め','もり','やま','ゆき','よる','らいねん','りんご','るす','れいぞうこ','ろうか','わたし','本を読む','ほん'];
 const starterKana=[
  ...hira.map((char,i)=>({char,reading:romaji[i],key:'h-'+i})),
  ...kata.map((char,i)=>({char,reading:romaji[i],key:'k-'+i}))
@@ -139,10 +140,11 @@ function App(){
      <div className="focusKana"><span className="focusChar">{currentKana.char}</span><strong>{currentKana.reading}</strong><span>點上方假名可聆聽錄音</span></div>
      <button className="playButton" onClick={()=>play(currentKana.char)}>▶ 播放「{currentKana.char}」發音</button>
      <div className="audioFeedback" aria-live="polite">{audioStatus==='loading'?'音檔載入中…':audioStatus==='error'?'音檔目前無法播放，請檢查連線後重試。':audioStatus==='playing'?'正在播放發音':'短音練習：聽一遍，再自己唸一遍。'}</div>
+     <button className="exampleSound" onClick={()=>play(kanaExamples[rowInfo.from+card])}>▶ 聽例詞「{kanaExamples[rowInfo.from+card]}」作發音對照</button>
      {['へ','ヘ','は','ハ','を','ヲ','ん','ン'].includes(currentKana.char)&&<div className="soundTip">
       <strong>發音提醒</strong>
       <p>{['へ','ヘ'].includes(currentKana.char)?'「へ」作假名讀 he；作方向助詞時讀 e。': ['は','ハ'].includes(currentKana.char)?'「は」作假名讀 ha；作主題助詞時讀 wa。':['を','ヲ'].includes(currentKana.char)?'「を」現代標準語通常發 o 音（羅馬字也常寫 wo）。':'「ん」是鼻音，與前後發音環境有關。'}</p>
-      {['へ','ヘ'].includes(currentKana.char)&&<button className="textButton" onClick={()=>play('へや')}>▶ 聽單字「へや」（房間）來比較</button>}
+      
      </div>}
      <div className="centerNav"><button onClick={()=>{setCard(i=>(i-1+row.length)%row.length);setAudioStatus('idle')}}>← 上一個</button><button onClick={()=>{setCard(i=>(i+1)%row.length);setAudioStatus('idle')}}>下一個 →</button></div>
     </div></>}
