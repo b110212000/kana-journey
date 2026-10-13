@@ -10,8 +10,9 @@ import './ios.css';
 import './yomio.css';
 import './quiz.css';
 import AppSharing from './AppSharing';
+import {useToast} from './ToastProvider';
 
-const VERSION='1.5.0';
+const VERSION='1.5.1';
 const APP_ICON=`${import.meta.env.BASE_URL}icon.svg?v=130`;
 const KEY='kana-journey-v1';
 const families=[
@@ -58,7 +59,7 @@ function App(){
  const [sessionId,setSessionId]=useState(null);
  const [sessionMeta,setSessionMeta]=useState(null);
  const [latestResult,setLatestResult]=useState(null);
- const [shareStatus,setShareStatus]=useState('');
+ const notify = useToast();
  const theme=db.theme==='dark'?'dark':'light';
  useEffect(()=>{
   document.documentElement.dataset.theme=theme;
@@ -99,9 +100,28 @@ function App(){
  const progress=paper.length?Math.round(100*at/paper.length):0;
  const go=next=>{setTab(next);setAudioStatus('idle');setAudioNote(false);if(contentRef.current)contentRef.current.scrollTop=0};
  const changeTheme=next=>setDb(old=>({...old,theme:next}));
- const selectQuizPanel=panel=>{setQuizPanel(panel);setShareStatus('');if(contentRef.current)contentRef.current.scrollTop=0};
+ const selectQuizPanel=panel=>{setQuizPanel(panel);if(contentRef.current)contentRef.current.scrollTop=0};
  const changeLevel=next=>{setLevel(next);setFocus('全部');setWordIndex(0);setPaper([]);setSessionDone(false);setPicked(null);setReviewMode(false);setQuizPanel('practice')};
- const shareResult=async result=>{if(!result)return;setShareStatus('');try{const status=await shareScore(result);if(status==='copied')setShareStatus('成績文字已複製，可以貼到 LINE 或訊息。');if(status==='downloaded')setShareStatus('已建立成績圖片，可以再分享給朋友。')}catch{setShareStatus('無法開啟分享功能，請改用儲存圖片。')}};
+ const shareResult=async result=>{
+   if(!result)return;
+   try {
+     const status=await shareScore(result);
+     if(status==='shared')notify('已完成成績分享操作。');
+     else if(status==='copied')notify('成績文字已複製，可貼到 LINE 或訊息。');
+     else if(status==='downloaded')notify('成績圖片已開始下載，請依瀏覽器提示儲存。');
+   }catch {
+     notify('無法開啟分享功能，請改用儲存圖片。','error');
+   }
+ };
+ const saveScoreImage=result=>{
+   if(!result)return;
+   try {
+     downloadScoreImage(result);
+     notify('已開始下載成績圖片，請依瀏覽器提示儲存。');
+   }catch {
+     notify('無法產生成績圖片，請稍後重試。','error');
+   }
+ };
  const chooseFamily=i=>{setFamily(i);setCard(0);setAudioStatus('idle')};
  useEffect(()=>{if(tab==='learn' && level==='初階')preloadKana(row.map(x=>x.char))},[tab,script,family,level]);
  const play=(text)=>speak(text,setAudioStatus);
@@ -128,7 +148,7 @@ function App(){
    setPaper(quiz);setAt(0);setPicked(null);setCorrectInRound(0);setReviewMode(wrongOnly);
    setSessionId('run-'+Date.now()+'-'+Math.random().toString(36).slice(2,7));
    setSessionMeta({level,category:wrongOnly?'錯題複習':withFocus});
-   setLatestResult(null);setShareStatus('');completedRunRef.current=null;
+   setLatestResult(null);completedRunRef.current=null;
    setQuizPanel('practice');setSessionDone(false);go('quiz');
  }
  function answer(value){
@@ -156,7 +176,7 @@ function App(){
        return {...old,quizHistory:[item,...history].slice(0,200)};
      });
      setLatestResult(item);setSessionDone(true);setPicked(null);
-     setShareStatus('');
+     notify('成績已存入測驗紀錄。');
    }else {setAt(x=>x+1);setPicked(null)}
  }
  function navButton(key,title,glyph){return <button key={key} type="button" aria-current={tab===key?'page':undefined} className={'navButton '+(tab===key?'current':'')} onClick={()=>go(key)}><span className="navIcon" aria-hidden="true">{glyph}</span><span>{title}</span></button>}
@@ -211,18 +231,17 @@ function App(){
     <button type="button" className={quizPanel==='practice'?'selected':''} aria-pressed={quizPanel==='practice'} onClick={()=>selectQuizPanel('practice')}><ClipboardCheck size={17}/> 開始測驗</button>
     <button type="button" className={quizPanel==='history'?'selected':''} aria-pressed={quizPanel==='history'} onClick={()=>selectQuizPanel('history')}><History size={17}/> 測驗紀錄 <span className="historyCount">{quizHistory.length}</span></button>
    </div>
-   {quizPanel==='history'?<QuizHistory history={quizHistory} onShare={shareResult} onDownload={downloadScoreImage} onPractice={()=>{setPaper([]);setQuizPanel('practice');setShareStatus('')}} shareStatus={shareStatus}/>:
+   {quizPanel==='history'?<QuizHistory history={quizHistory} onShare={shareResult} onDownload={saveScoreImage} onPractice={()=>{setPaper([]);setQuizPanel('practice')}}/>:
    !paper.length?<div className="testSetup"><h3>準備開始 {level} 練習</h3><div className="chipGroup">{topics.map(type=><button key={type} className={focus===type?'active':''} onClick={()=>setFocus(type)}>{type}</button>)}</div><p className="muted">{level==='初階'?'初階預設從目前學習的 '+rowInfo.name+' 出題；選「單字」可練生活單字。':'選擇題型，不想限制就選「全部」。'}</p><button className="primary" onClick={()=>begin(false)}>開始隨機測驗 →</button>
     <div className="testDivider"/><div className="retryBox"><span>錯題再練一次</span><strong>{filteredPool.filter(q=>(wrong[q.id]||0)>0).length} 題待複習</strong><button onClick={()=>begin(true)} disabled={!filteredPool.some(q=>(wrong[q.id]||0)>0)}>重練錯題</button></div></div>
    : sessionDone?<div className="resultCard">
       {currentResult&&<ScoreSummary record={currentResult}/>}
       <h3>{correctInRound===paper.length?'太棒了，全部答對！':'完成一回合，繼續進步！'}</h3>
-      <p>成績已儲存到測驗紀錄，錯題也已加入複習清單。</p>
+      <p>可分享成績卡給朋友，或查看歷史紀錄與錯題。</p>
       <div className="resultActions">
        <button className="primary shareScoreButton" onClick={()=>shareResult(currentResult)} disabled={!currentResult}><Share2 size={18}/> 分享我的成績</button>
-       <button className="downloadScoreButton" onClick={()=>downloadScoreImage(currentResult)} disabled={!currentResult}><Download size={17}/> 儲存圖片</button>
+       <button className="downloadScoreButton" onClick={()=>saveScoreImage(currentResult)} disabled={!currentResult}><Download size={17}/> 儲存圖片</button>
       </div>
-      {shareStatus&&<p className="shareHint" role="status">{shareStatus}</p>}
       <div className="resultSecondary">
        <button onClick={()=>begin(false)}><RotateCcw size={16}/> 再做一回合</button>
        <button onClick={()=>selectQuizPanel('history')}><History size={16}/> 查看紀錄</button>
@@ -279,7 +298,7 @@ function ScoreSummary({record}){
   <div className="scorePreviewDate">{scoreDate(record.date)}</div>
  </div>;
 }
-function QuizHistory({history,onShare,onDownload,onPractice,shareStatus}){
+function QuizHistory({history,onShare,onDownload,onPractice}){
  const entries=[...history].filter(r=>r&&r.total>0).sort((a,b)=>b.date-a.date);
  const all=entries.length;
  const personalBest=all?Math.max(...entries.map(x=>scorePercent(x))):0;
@@ -293,7 +312,6 @@ function QuizHistory({history,onShare,onDownload,onPractice,shareStatus}){
     <div className="historyProgress"><span style={{width:scorePercent(record)+'%'}}/></div>
     <div className="historyActions"><button onClick={()=>onShare(record)}><Share2 size={16}/> 分享成績</button><button onClick={()=>onDownload(record)}><Download size={16}/> 儲存圖片</button></div>
    </div>)}</div></>}
-  {shareStatus&&<p className="shareHint" role="status">{shareStatus}</p>}
  </div>;
 }
 function WordFlashCard({word,position,total,reveal,setReveal,onPlay,onNext,onPrev}){
