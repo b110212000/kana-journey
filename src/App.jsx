@@ -25,9 +25,9 @@ const starterKana=[
 ];
 function starterPool(){
  const kanaQuestions=starterKana.flatMap((k,i)=>[
-  {id:'b-k-'+k.key,type:'假名',prompt:'「'+k.char+'」的讀音是哪一個？',spoken:k.char,answer:k.reading,
-    options:options(k.reading,romaji),explain:k.char+' 的基本發音是 '+k.reading+'。'+(['へ','ヘ'].includes(k.char)?'作方向助詞時，へ 才讀 e。':'')},
-  {id:'b-r-'+k.key,type:'假名',prompt:'哪個假名讀作「'+k.reading+'」？',spoken:k.char,answer:k.char,
+  {id:'b-k-'+k.key,type:'假名',prompt:['を','ヲ'].includes(k.char)?'「'+k.char+'」的羅馬字寫法是哪個？（實際常讀 o）':'「'+k.char+'」的基本發音是哪一個？',spoken:k.char,answer:k.reading,
+    options:options(k.reading,romaji),explain:['を','ヲ'].includes(k.char)?'「を」常寫作 wo，但現代標準日語通常讀 o。':k.char+' 的基本發音是 '+k.reading+'。'+(['へ','ヘ'].includes(k.char)?'作方向助詞時，へ 才讀 e。':'')},
+  {id:'b-r-'+k.key,type:'假名',prompt:k.reading==='wo'?'哪個假名的羅馬字寫作「wo」？':'哪個假名的基本讀音是「'+k.reading+'」？',spoken:k.char,answer:k.char,
     options:options(k.char,(i<46?hira:kata)),explain:k.reading+' 對應的假名是 '+k.char+'。'}
  ]);
  const wordQuestions=words.flatMap((w,i)=>[
