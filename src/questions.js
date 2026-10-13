@@ -1,5 +1,5 @@
-import {generateVocabularyQuestions} from './quizGenerator';
-import {extraQuestions} from './grammarReadingExpansion';
+import {generateVocabularyQuestions} from './quizGenerator.js';
+import {extraQuestions} from './grammarReadingExpansion.js';
 
 // JLPT 題型參考官方公開題目構成，所有題目與解析均為本專案原創，非歷屆試題逐字重製。
 export const levels = [
