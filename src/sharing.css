@@ -41,3 +41,17 @@
  .appConnectActions{gap:7px}
  .appConnectActions button{padding:11px 5px;gap:5px}
 }
+
+/* v1.8.1: distinguish sharing to friends from opening in a browser. */
+.appSafariGuide{display:grid;gap:11px;padding:13px;border:1px solid var(--app-line);border-radius:13px;
+ background:var(--app-input)}
+.appSafariGuide>.appConnectDescription{font-size:12px;line-height:1.75}
+.appSafariActions{display:grid;gap:9px}
+.appSafariActions .appInstallCopy{min-height:46px;background:var(--app-soft);color:var(--app-soft-text);
+ border:1px solid var(--app-hero-line)}
+.appTryBrowser{display:flex;align-items:center;justify-content:center;gap:9px;min-height:46px;width:100%;
+ padding:11px 12px;border:1px solid var(--app-line);border-radius:12px;background:var(--app-card);
+ color:var(--app-accent);font-size:13px;font-weight:700;text-decoration:none;text-align:center}
+.appTryBrowser:focus-visible{outline:2px solid var(--app-accent);outline-offset:3px}
+.appSafariGuide .appConnectFootnote{font-size:11px;line-height:1.7}
+@media(max-width:680px){.appSafariGuide{padding:12px}.appTryBrowser{font-size:12px}}
