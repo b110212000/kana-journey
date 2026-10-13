@@ -78,3 +78,19 @@
  .navButton .settingsUpdateDot{right:-3px;top:-3px}
 }
 @media(prefers-reduced-motion:reduce){.settingItemPanel{animation:none}.settingItemChevron{transition:none}.settingUpdateButton .isChecking{animation:none}}
+
+/* v1.8.0: quiet statistics kept inside the collapsed Settings section */
+.bankOverview{display:grid;border:1px solid var(--app-line);border-radius:12px;overflow:hidden;background:var(--app-input)}
+.bankRow{display:grid;grid-template-columns:50px minmax(0,1fr);align-items:center;column-gap:9px;row-gap:4px;padding:12px 13px}
+.bankRow+.bankRow{border-top:1px solid var(--app-line)}
+.bankRow>strong{font-size:13px;color:var(--app-text)}
+.bankRow>span{font-size:13px;color:var(--app-accent);font-weight:750;text-align:right}
+.bankRow>small{grid-column:1/-1;color:var(--app-muted);font-size:11px;line-height:1.7}
+.bankResourceList{display:grid;gap:0}
+.bankResourceList>strong{font-size:13px;color:var(--app-text);margin-bottom:5px}
+.bankResourceList>a{display:flex;justify-content:space-between;align-items:center;gap:8px;
+ border-bottom:1px solid var(--app-line);padding:11px 0;font-size:12px;font-weight:650;
+ text-decoration:none;color:var(--app-accent)}
+.bankResourceList>a svg{flex:0 0 auto}
+.bankResourceList>a:focus-visible{outline:2px solid var(--app-accent);outline-offset:2px}
+@media(max-width:680px){.bankRow{padding:11px 12px}.bankResourceList>a{font-size:12px}}
