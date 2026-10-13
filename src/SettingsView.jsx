@@ -1,5 +1,5 @@
 import React from 'react';
-import {BookOpen, Sun, Moon, Share2, Info, RefreshCw, ChevronDown, CheckCircle2, WifiOff} from 'lucide-react';
+import {BookOpen, Sun, Moon, Share2, Info, RefreshCw, ChevronDown, CheckCircle2, WifiOff, LibraryBig, ExternalLink} from 'lucide-react';
 import AppSharing from './AppSharing';
 import {useToast} from './ToastProvider';
 import './settings.css';
@@ -20,7 +20,7 @@ function SettingSection({id,icon:Icon,title,summary,open,onToggle,children,newBa
 
 export default function SettingsView({
   level,levels,onLevelChange,theme,onThemeChange,
-  version,update,open,onToggle,appIcon
+  version,update,open,onToggle,appIcon,questionBank,starterQuestionCount
 }) {
   const notify=useToast();
   const hasNew=update.available;
@@ -65,6 +65,31 @@ export default function SettingsView({
       <SettingSection id="sharing" icon={Share2} title="分享與安裝"
         summary="分享連結、加入手機主畫面" open={open==='sharing'} onToggle={onToggle}>
         <AppSharing/>
+      </SettingSection>
+
+      <SettingSection id="bank" icon={LibraryBig} title="題庫資訊"
+        summary="各級題目數、題型與參考資源" open={open==='bank'} onToggle={onToggle}>
+        <p className="settingHelper">YOMIO 的練習題依程度分類。每回合只抽一部分題目，下面可以查看完整題庫數量。</p>
+        <div className="bankOverview" aria-label="JLPT 題庫統計">
+          <div className="bankRow">
+            <strong>初階</strong><span>{starterQuestionCount} 題</span>
+            <small>五十音與生活單字</small>
+          </div>
+          {['N5','N4','N3','N2','N1'].map(id=>{
+            const questions=questionBank[id]||[];
+            return <div className="bankRow" key={id}>
+              <strong>{id}</strong><span>{questions.length} 題</span>
+              <small>{['單字','文法','讀解'].map(type=>type+' '+questions.filter(q=>q.type===type).length).join(' · ')}</small>
+            </div>;
+          })}
+        </div>
+        <div className="bankResourceList">
+          <strong>模擬考與題型參考</strong>
+          <a href="https://www.jlpt.jp/tw/samples/sampleindex.html" target="_blank" rel="noopener noreferrer">JLPT 官方試題集 <ExternalLink size={14}/></a>
+          <a href="https://jlptsensei.com/downloads/jlpt-n5-practice-test/" target="_blank" rel="noopener noreferrer">JLPT Sensei 免費練習資源 <ExternalLink size={14}/></a>
+          <a href="https://www.unagibun.com/jlpt-online/" target="_blank" rel="noopener noreferrer">Unagibun 線上模擬考 <ExternalLink size={14}/></a>
+        </div>
+        <p className="settingFinePrint">外部連結僅供參考題型與練習方式。YOMIO 題目為自行編寫的練習題，並非官方試題或授權轉載的模擬試卷。</p>
       </SettingSection>
 
       <SettingSection id="update" icon={RefreshCw} title="版本更新"
