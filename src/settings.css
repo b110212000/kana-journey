@@ -1,0 +1,80 @@
+/* v1.6.0: restrained, native-like collapsible Settings. */
+.settingsSimplified{display:grid;gap:16px}
+.settingBrandCompact{display:flex;align-items:center;gap:12px;padding:4px 3px 7px}
+.settingBrandCompact img{width:47px;height:47px;object-fit:cover;border-radius:13px}
+.settingBrandCompact>span{display:grid;gap:3px}
+.settingBrandCompact strong{font-size:18px;letter-spacing:1.5px;color:var(--app-text)}
+.settingBrandCompact small{font-size:12px;color:var(--app-muted)}
+.settingList{display:grid;overflow:hidden;background:var(--app-card);border-radius:17px;
+ border:1px solid var(--app-line);box-shadow:var(--app-shadow)}
+.settingItem:not(:last-child){border-bottom:1px solid var(--app-line)}
+.settingItemButton{display:flex;align-items:center;gap:12px;width:100%;min-width:0;text-align:left;
+ border:0;border-radius:0;background:transparent;color:var(--app-text);padding:16px 17px}
+.settingItemButton:active{background:var(--app-input)}
+.settingItemIcon{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;
+ border-radius:11px;background:var(--app-soft);color:var(--app-soft-text)}
+.settingItemText{flex:1;min-width:0;display:grid;gap:4px}
+.settingItemText strong{font-size:14px;font-weight:700}
+.settingItemText small{font-size:11px;color:var(--app-muted);line-height:1.5}
+.settingItemChevron{flex:0 0 auto;color:var(--app-muted);transition:transform .15s ease}
+.settingItem.expanded .settingItemChevron{transform:rotate(180deg)}
+.settingItemPanel{display:grid;gap:15px;padding:16px 18px 20px;margin:0 16px;
+ border-top:1px solid var(--app-line);animation:settingOpen .16s ease-out}
+@keyframes settingOpen{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.settingHelper{font-size:12px;line-height:1.75;color:var(--app-muted);margin:0}
+.settingHelper svg{display:inline;vertical-align:middle;margin-right:4px;color:var(--app-accent)}
+.settingSelectLabel{font-size:12px;color:var(--app-text);font-weight:700}
+.settingSelect{width:100%;min-height:46px;border:1px solid var(--app-line);border-radius:10px;
+ padding:10px 12px;background:var(--app-input);color:var(--app-text);font:600 14px inherit;
+ font-family:inherit;font-size:14px}
+.settingLevelDescription{padding:0}
+.settingVersionRows{display:grid;gap:0}
+.settingVersionRows>div{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:10px 0}
+.settingVersionRows>div+div{border-top:1px solid var(--app-line)}
+.settingVersionRows span{font-size:12px;color:var(--app-muted)}
+.settingVersionRows strong{font-size:13px;font-weight:700;color:var(--app-text);text-align:right}
+.settingAvailableTag{padding:5px 8px;font-size:11px;font-weight:750;background:var(--app-soft);
+ color:var(--app-soft-text);border-radius:8px;white-space:nowrap}
+.settingUpdateFound{display:flex;align-items:start;gap:9px;padding:11px 12px;border-radius:10px;
+ background:var(--app-soft);color:var(--app-soft-text)}
+.settingUpdateFound p{font-size:12px;line-height:1.7;margin:0}
+.updateGreenDot{flex:0 0 9px;height:9px;margin-top:5px;background:var(--app-accent);border-radius:50%}
+.settingUpdateButton{width:100%;display:flex;justify-content:center;align-items:center;gap:8px;
+ border:0;background:var(--app-accent);color:var(--app-accent-text);
+ min-height:47px;padding:12px;border-radius:11px;font-weight:700;font-size:13px}
+.settingUpdateButton:disabled{opacity:.65}
+.settingUpdateButton .isChecking{animation:settingSpin 1s linear infinite}
+@keyframes settingSpin{to{transform:rotate(360deg)}}
+.settingFinePrint{font-size:11px;color:var(--app-muted);line-height:1.8;margin:0}
+.settingFooter{text-align:center;font-size:11px;color:var(--app-muted);margin:0 0 6px}
+.settingsSimplified .themeChoices{margin:0}
+.settingsSimplified .appConnectGroup{display:grid;gap:12px;padding:0;border:0;border-radius:0;box-shadow:none;
+ background:transparent}
+.settingsSimplified .appConnectGroup+.appConnectGroup{border-top:1px solid var(--app-line);padding-top:16px;margin-top:3px}
+.settingsSimplified .appConnectGroup .settingsHeading{margin:0;color:var(--app-text);font-size:13px}
+.settingsSimplified .appConnectDescription{font-size:12px}
+.settingsSimplified .appConnectLink{padding:8px}
+.settingsSimplified .appConnectLink input{font-size:12px}
+.settingsSimplified .appConnectActions{gap:8px}
+.settingsSimplified .appInstallSteps{padding:12px}
+.settingsSimplified .appConnectFootnote{font-size:10px}
+.settingsUpdateDot{position:absolute;right:-2px;top:-3px;width:9px;height:9px;
+ background:#EC4B55;border:2px solid var(--app-card);border-radius:50%;
+ pointer-events:none;box-sizing:content-box}
+.headerSettings{position:relative}
+.headerSettings .settingsUpdateDot{top:-5px;right:-5px;border-color:var(--app-bg)}
+.navButton .navIcon{position:relative}
+.sidebar .navButton .settingsUpdateDot{border-color:var(--app-card)}
+@media(max-width:680px){
+ .settingsSimplified{gap:15px}
+ .settingItemButton{padding:15px 14px;gap:11px;min-height:66px}
+ .settingItemIcon{flex-basis:36px;width:36px;height:36px;border-radius:10px}
+ .settingItemPanel{margin:0 13px;padding:14px 4px 17px;gap:13px}
+ .settingList{border-radius:15px}
+ .settingBrandCompact{padding:3px 0 6px}
+ .settingBrandCompact img{width:43px;height:43px;border-radius:12px}
+ .settingItemText strong{font-size:14px}
+ .settingItemText small{font-size:11px}
+ .navButton .settingsUpdateDot{right:-3px;top:-3px}
+}
+@media(prefers-reduced-motion:reduce){.settingItemPanel{animation:none}.settingItemChevron{transition:none}.settingUpdateButton .isChecking{animation:none}}
