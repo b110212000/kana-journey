@@ -1,0 +1,33 @@
+{
+  "id": "/kana-journey/",
+  "name": "Kana Journey 日文學習",
+  "short_name": "Kana Journey",
+  "description": "每天30分鐘，從五十音開始學日文",
+  "lang": "zh-TW",
+  "start_url": "/kana-journey/",
+  "scope": "/kana-journey/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F7F9F8",
+  "theme_color": "#0B927F",
+  "icons": [
+    {
+      "src": "/kana-journey/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/kana-journey/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/kana-journey/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
