@@ -202,9 +202,28 @@ function App(){
    {tab==='quiz'&&<section className="page narrow"><div className="quizHeader">
     <div><span className="eyebrow">PRACTICE ・ {level}</span><h2>一題一題，專心思考</h2><p>單次最多 10 題，題目與選項都會重新隨機排列。</p></div>
    </div>
-   {!paper.length?<div className="testSetup"><h3>準備開始 {level} 練習</h3><div className="chipGroup">{topics.map(type=><button key={type} className={focus===type?'active':''} onClick={()=>setFocus(type)}>{type}</button>)}</div><p className="muted">{level==='初階'?'初階預設從目前學習的 '+rowInfo.name+' 出題；選「單字」可練生活單字。':'選擇題型，不想限制就選「全部」。'}</p><button className="primary" onClick={()=>begin(false)}>開始隨機測驗 →</button>
+   <div className="quizTabs" role="group" aria-label="測驗與歷史紀錄">
+    <button type="button" className={quizPanel==='practice'?'selected':''} aria-pressed={quizPanel==='practice'} onClick={()=>setQuizPanel('practice')}><ClipboardCheck size={17}/> 開始測驗</button>
+    <button type="button" className={quizPanel==='history'?'selected':''} aria-pressed={quizPanel==='history'} onClick={()=>setQuizPanel('history')}><History size={17}/> 測驗紀錄 <span className="historyCount">{quizHistory.length}</span></button>
+   </div>
+   {quizPanel==='history'?<QuizHistory history={quizHistory} onShare={shareResult} onDownload={downloadScoreImage} onPractice={()=>{setPaper([]);setQuizPanel('practice');setShareStatus('')}} shareStatus={shareStatus}/>:
+   !paper.length?<div className="testSetup"><h3>準備開始 {level} 練習</h3><div className="chipGroup">{topics.map(type=><button key={type} className={focus===type?'active':''} onClick={()=>setFocus(type)}>{type}</button>)}</div><p className="muted">{level==='初階'?'初階預設從目前學習的 '+rowInfo.name+' 出題；選「單字」可練生活單字。':'選擇題型，不想限制就選「全部」。'}</p><button className="primary" onClick={()=>begin(false)}>開始隨機測驗 →</button>
     <div className="testDivider"/><div className="retryBox"><span>錯題再練一次</span><strong>{filteredPool.filter(q=>(wrong[q.id]||0)>0).length} 題待複習</strong><button onClick={()=>begin(true)} disabled={!filteredPool.some(q=>(wrong[q.id]||0)>0)}>重練錯題</button></div></div>
-   : sessionDone?<div className="resultCard"><span className="eyebrow">{reviewMode?'錯題練習':'本回合完成'}</span><div className="resultScore">{correctInRound} <small>/ {paper.length}</small></div><h3>{correctInRound===paper.length?'太棒了，全部答對！':'完成一回合，繼續進步！'}</h3><p>錯誤題目已加入複習記錄；下次可以單獨重練。</p><button className="primary" onClick={()=>begin(false)}>再來一回合 →</button><button className="bare" onClick={()=>{setPaper([]);setSessionDone(false)}}>調整題型</button></div>
+   : sessionDone?<div className="resultCard">
+      {currentResult&&<ScoreSummary record={currentResult}/>}
+      <h3>{correctInRound===paper.length?'太棒了，全部答對！':'完成一回合，繼續進步！'}</h3>
+      <p>成績已儲存到測驗紀錄，錯題也已加入複習清單。</p>
+      <div className="resultActions">
+       <button className="primary shareScoreButton" onClick={()=>shareResult(currentResult)} disabled={!currentResult}><Share2 size={18}/> 分享我的成績</button>
+       <button className="downloadScoreButton" onClick={()=>downloadScoreImage(currentResult)} disabled={!currentResult}><Download size={17}/> 儲存圖片</button>
+      </div>
+      {shareStatus&&<p className="shareHint" role="status">{shareStatus}</p>}
+      <div className="resultSecondary">
+       <button onClick={()=>begin(false)}><RotateCcw size={16}/> 再做一回合</button>
+       <button onClick={()=>{setQuizPanel('history');setShareStatus('')}}><History size={16}/> 查看紀錄</button>
+      </div>
+      <button className="bare" onClick={()=>{setPaper([]);setSessionDone(false)}}>調整題型</button>
+    </div>
    :<div className="testCard"><div className="quizMeta"><span>{at+1} / {paper.length} 題</span><span>{issue.type}</span></div><div className="progressBar"><div style={{width:progress+'%'}}/></div>
      <div className="question">{issue.prompt}</div>
      {issue.type==='假名'&&<button className="textButton" onClick={()=>play(issue.spoken)}>▶ 聽發音</button>}
