@@ -4,6 +4,22 @@ import './sharing.css';
 
 const appUrl = () => new URL(import.meta.env.BASE_URL, window.location.origin).href;
 
+// Capture Android's optional install prompt when the app first loads,
+// not only after the user navigates to Settings.
+let cachedInstallPrompt = null;
+const promptListeners = new Set();
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    cachedInstallPrompt = event;
+    promptListeners.forEach((listener) => listener(event));
+  });
+  window.addEventListener('appinstalled', () => {
+    cachedInstallPrompt = null;
+    promptListeners.forEach((listener) => listener(null));
+  });
+}
+
 function copyFallback(text) {
   const area = document.createElement('textarea');
   area.value = text;
@@ -29,16 +45,12 @@ export default function AppSharing() {
   const isAndroid = /Android/i.test(userAgent);
   const standalone = window.matchMedia('(display-mode: standalone)').matches ||
     navigator.standalone === true;
-  const [installPrompt, setInstallPrompt] = useState(null);
+  const [installPrompt, setInstallPrompt] = useState(cachedInstallPrompt);
   const [message, setMessage] = useState({section:'',text:'',success:false});
 
   useEffect(() => {
-    const capturePrompt = (event) => {
-      event.preventDefault();
-      setInstallPrompt(event);
-    };
-    window.addEventListener('beforeinstallprompt', capturePrompt);
-    return () => window.removeEventListener('beforeinstallprompt', capturePrompt);
+    promptListeners.add(setInstallPrompt);
+    return () => promptListeners.delete(setInstallPrompt);
   }, []);
 
   async function copyLink(section) {
@@ -88,6 +100,7 @@ export default function AppSharing() {
     } catch {
       setMessage({section:'install',text:'無法直接開啟安裝提示，請使用瀏覽器選單操作。',success:false});
     } finally {
+      cachedInstallPrompt = null;
       setInstallPrompt(null);
     }
   }
