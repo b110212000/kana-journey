@@ -1,5 +1,7 @@
 // 每個程度的練習用例句均為專案編寫，不使用官方試題內容。
-export const gradedWords = [
+import {expandedWords} from './vocabularyExpansion';
+
+const baseWords = [
   {
     "level": "N5",
     "jp": "学生",
@@ -321,3 +323,6 @@ export const gradedWords = [
     "meaning": "制定縝密計畫。"
   }
 ];
+
+
+export const gradedWords = [...baseWords, ...expandedWords];
