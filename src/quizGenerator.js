@@ -1,4 +1,4 @@
-import {gradedWords} from './vocabulary';
+import {gradedWords} from './vocabulary.js';
 
 // Each word generates two complementary questions: reading Japanese -> meaning,
 // and interpreting Chinese -> Japanese. IDs are stable so mistake history persists.
@@ -12,7 +12,7 @@ export function generateVocabularyQuestions(level) {
     const name=level+'-vocab-'+(index+1);
     return [
       {id:name+'-meaning',type:'單字',
-       prompt:'「'+word.jp+'（'+word.kana+'）」的意思是？',
+       prompt:'「'+word.jp+'」（讀作 '+word.kana+'）的中文意思最接近哪一項？',
        spoken:word.jp,answer:word.zh,options:[word.zh,...distractors.map(w=>w.zh)],
        explain:word.jp+'（'+word.kana+'）＝'+word.zh+'。'+(word.example?'例：'+word.example+'（'+word.meaning+'）':'')},
       {id:name+'-japanese',type:'單字',
