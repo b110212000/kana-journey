@@ -7,7 +7,7 @@ import {speak,preloadKana} from './audio';
 import './app.css';
 import './ios.css';
 
-const VERSION='1.2.0';
+const VERSION='1.3.0';
 const APP_ICON=`${import.meta.env.BASE_URL}icon.svg`;
 const KEY='kana-journey-v1';
 const families=[
@@ -127,7 +127,7 @@ function App(){
  function navButton(key,title,glyph){return <button key={key} type="button" aria-current={tab===key?'page':undefined} className={'navButton '+(tab===key?'current':'')} onClick={()=>go(key)}><span className="navIcon" aria-hidden="true">{glyph}</span><span>{title}</span></button>}
  return <div className="app">
   <aside className="sidebar">
-   <button className="logo" onClick={()=>go('home')}><img className="brandIcon" src={APP_ICON} alt=""/><span><strong>Kana Journey</strong><small>我的日文學習旅程</small></span></button>
+   <button className="logo" onClick={()=>go('home')}><img className="brandIcon" src={APP_ICON} alt=""/><span><strong>YOMIO</strong><small>日本語，一點一點學</small></span></button>
    <nav aria-label="主要選單">
     {navButton('home','首頁',<House size={22}/>)}{navButton('learn','學習',<BookOpen size={22}/>)}{navButton('words','單字',<Layers3 size={22}/>)}{navButton('quiz','測驗',<ClipboardCheck size={22}/>)}{navButton('settings','設定',<Settings2 size={22}/>)}
    </nav>
@@ -135,11 +135,11 @@ function App(){
   </aside>
   <main className="content" ref={contentRef} id="app-scroll">
    <header className="appTop">
-    <div className="appTitle"><img src={APP_ICON} alt="" className="headerIcon"/><div><span className="smallOverline">KANA JOURNEY</span><h1>{({home:'今天也來學日文',learn:level==='初階'?'五十音學習':'課程學習',words:'單字練習',quiz:'隨機測驗',settings:'設定'})[tab]}</h1></div></div>
+    <div className="appTitle"><img src={APP_ICON} alt="" className="headerIcon"/><div><span className="smallOverline">YOMIO · JAPANESE LEARNING</span><h1>{({home:'今天也來學日文',learn:level==='初階'?'五十音學習':'課程學習',words:'單字練習',quiz:'隨機測驗',settings:'設定'})[tab]}</h1></div></div>
     {tab!=='settings'&&<button className="headerSettings" type="button" aria-label="開啟設定" onClick={()=>go('settings')}><Settings2 size={22}/></button>}
    </header>
    {tab==='home'&&<section className="page">
-    <div className="heroSimple"><div><span className="eyebrow">每日 30 分鐘</span><h2>一步一步，<br/>從五十音走向日常對話。</h2><p>一次學一小組、一次練一個主題。</p></div><span className="heroSymbol">あ</span></div>
+    <div className="heroSimple"><div><span className="eyebrow">YOMIO · DAILY LEARNING</span><h2>每天一點，<br/>日文更近一點。</h2><p>從五十音開始，輕鬆走向日常對話。</p></div><img className="heroBrandMark" src={APP_ICON} alt="YOMIO 標誌"/></div>
     <div className="sectionHeading"><div><h2>繼續你的學習</h2><p>今天先完成一個小目標。</p></div></div>
     <button className="levelShortcut" onClick={()=>go('settings')} aria-label="前往設定調整目前程度"><span className="levelSymbol">文</span><span><small>目前程度</small><strong>{level}・{levels.find(x=>x.id===level)?.subtitle}</strong></span><ChevronRight size={19}/></button>
     <div className="actionPair"><button className="routeCard" onClick={()=>go('learn')}><span className="routeIcon">あ</span><strong>{level==='初階'?'學習五十音':'本級重點單字'}</strong><span>循序學習・每次一小組</span><b>開始學習 →</b></button><button className="routeCard" onClick={()=>beginQuizFromHome()}><span className="routeIcon warm">✓</span><strong>今天的 10 題練習</strong><span>題目和選項隨機排列</span><b>開始測驗 →</b></button></div>
@@ -182,7 +182,7 @@ function App(){
     </div>}
    </section>}
    {tab==='settings'&&<section className="page narrow settingsPage">
-      <div className="settingsIntro"><h2>個人化學習</h2><p>讓 Kana Journey 符合你的程度與使用習慣。</p></div>
+      <div className="settingsBrand"><img className="settingsBrandIcon" src={APP_ICON} alt=""/><div><strong>YOMIO</strong><p>每天一點，日文更近一點。</p></div></div><div className="settingsIntro"><h2>個人化學習</h2><p>讓 YOMIO 符合你的程度與使用習慣。</p></div>
       <div className="settingsGroup">
        <div className="settingsHeading"><BookOpen size={19}/><span>學習設定</span></div>
        <label className="settingsField" htmlFor="study-level"><span><strong>目前程度</strong><small>變更後套用至單字與測驗</small></span>
@@ -200,17 +200,17 @@ function App(){
       </div>
       <div className="settingsGroup">
        <div className="settingsHeading"><Share2 size={19}/><span>安裝到 iPhone</span></div>
-       <p className="installInstructions">使用 Safari 開啟本網站，點選「分享」，再選「加入主畫面」，就能從桌面圖示啟動 Kana Journey。</p>
+       <p className="installInstructions">使用 Safari 開啟本網站，點選「分享」，再選「加入主畫面」，就能從桌面圖示啟動 YOMIO。</p>
        <div className="installHint">加入主畫面後會以獨立 App 視窗開啟，不需要 App Store。</div>
       </div>
       <div className="settingsGroup">
        <div className="settingsHeading"><Info size={19}/><span>關於 App</span></div>
-       <div className="settingsRow"><span>應用程式</span><strong>Kana Journey</strong></div>
+       <div className="settingsRow"><span>應用程式</span><strong>YOMIO</strong></div>
        <div className="settingsRow"><span>目前版本</span><strong>v{VERSION}</strong></div>
        <div className="settingsRow"><span>資料儲存</span><strong>此裝置瀏覽器</strong></div>
       </div>
      </section>}
-   <footer>學習資料儲存於此裝置・題目為原創練習題，非 JLPT 官方歷屆試題・<a href="https://www.jlpt.jp/tw/samples/sampleindex.html" target="_blank" rel="noreferrer">官方樣題</a></footer>
+   <footer>YOMIO · 學習資料儲存於此裝置・題目為原創練習題，非 JLPT 官方歷屆試題・<a href="https://www.jlpt.jp/tw/samples/sampleindex.html" target="_blank" rel="noreferrer">官方樣題</a></footer>
   </main>
  </div>;
 
