@@ -268,6 +268,33 @@ function App(){
 
  function beginQuizFromHome(){setFocus('全部');begin(false,'全部')}
 }
+function ScoreSummary({record}){
+ const value=scorePercent(record);
+ return <div className="scorePreview" aria-label={'本次得分 '+value+'%'}>
+  <div className="scorePreviewBrand"><Trophy size={18}/><span>YOMIO · 成就解鎖</span></div>
+  <div className="scorePreviewLevel">{record.level} · {record.mode==='review'?'錯題複習':'日語測驗'}</div>
+  <div className="scorePreviewPercent">{value}<small>%</small></div>
+  <div className="scorePreviewDetail">答對 {record.correct} / {record.total} 題</div>
+  <div className="scorePreviewDate">{scoreDate(record.date)}</div>
+ </div>;
+}
+function QuizHistory({history,onShare,onDownload,onPractice,shareStatus}){
+ const entries=[...history].filter(r=>r&&r.total>0).sort((a,b)=>b.date-a.date);
+ const all=entries.length;
+ const personalBest=all?Math.max(...entries.map(x=>scorePercent(x))):0;
+ return <div className="quizHistory">
+  <div className="historyOverview"><div><span>完成回合</span><strong>{all}<small> 回</small></strong></div><div><span>最高正確率</span><strong>{personalBest}<small> %</small></strong></div></div>
+  {!all?<div className="historyEmpty"><Trophy size={37}/><h3>第一張成績卡，等你來挑戰！</h3><p>測驗完成後會自動保存日期、分數與程度，可以隨時回來分享。</p><button className="primary" onClick={onPractice}>開始第一回合 →</button></div>:
+   <><div className="historyCaption"><h3>歷史成績</h3><span>僅儲存於這台裝置</span></div>
+   <div className="historyList">{entries.map(record=><div className="historyEntry" key={record.id}>
+    <div className="historyEntryTop"><span className="historyLevel">{record.level}・{record.mode==='review'?'錯題複習':'隨機測驗'}</span><span className="historyTime">{scoreDate(record.date)}</span></div>
+    <div className="historyEntryMiddle"><div><strong>{scorePercent(record)}%</strong><small>{record.correct} / {record.total} 題正確</small></div><div className="historyBadge">{scorePercent(record)===100?'完美過關':'繼續加油'}</div></div>
+    <div className="historyProgress"><span style={{width:scorePercent(record)+'%'}}/></div>
+    <div className="historyActions"><button onClick={()=>onShare(record)}><Share2 size={16}/> 分享成績</button><button onClick={()=>onDownload(record)}><Download size={16}/> 儲存圖片</button></div>
+   </div>)}</div></>}
+  {shareStatus&&<p className="shareHint" role="status">{shareStatus}</p>}
+ </div>;
+}
 function WordFlashCard({word,position,total,reveal,setReveal,onPlay,onNext,onPrev}){
  if(!word)return null;
  return <div className="vocabFlash">
