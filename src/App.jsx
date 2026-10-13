@@ -1,11 +1,13 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {House, BookOpen, Layers3, ClipboardCheck, Settings2, ChevronRight, Sun, Moon, Share2, Info} from 'lucide-react';
 import {hira,kata,romaji,words} from './data';
 import {levels,questionBank} from './questions';
 import {gradedWords} from './vocabulary';
 import {speak,preloadKana} from './audio';
 import './app.css';
 
-const VERSION='1.1.0';
+const VERSION='1.2.0';
+const APP_ICON=`${import.meta.env.BASE_URL}icon.svg`;
 const KEY='kana-journey-v1';
 const families=[
   {name:'あ行',from:0,to:5},{name:'か行',from:5,to:10},
@@ -45,6 +47,13 @@ function getLevelPool(level){
 function App(){
  const [db,setDb]=useState(getSaved);
  const [tab,setTab]=useState('home');
+ const contentRef=useRef(null);
+ const theme=db.theme==='dark'?'dark':'light';
+ useEffect(()=>{
+  document.documentElement.dataset.theme=theme;
+  document.documentElement.style.colorScheme=theme;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#101A24':'#F7F9F8');
+ },[theme]);
  const [level,setLevel]=useState(db.selectedLevel||'初階');
  const [script,setScript]=useState('平假名');
  const [family,setFamily]=useState(0);
@@ -75,7 +84,8 @@ function App(){
  const topics=level==='初階'?['全部','假名','單字']:['全部','單字','文法','讀解'];
  const issue=paper[at];
  const progress=paper.length?Math.round(100*at/paper.length):0;
- const go=next=>{setTab(next);setAudioStatus('idle');setAudioNote(false)};
+ const go=next=>{setTab(next);setAudioStatus('idle');setAudioNote(false);if(contentRef.current)contentRef.current.scrollTop=0};
+ const changeTheme=next=>setDb(old=>({...old,theme:next}));
  const changeLevel=next=>{setLevel(next);setFocus('全部');setWordIndex(0);setPaper([]);setSessionDone(false);setPicked(null);setReviewMode(false)};
  const chooseFamily=i=>{setFamily(i);setCard(0);setAudioStatus('idle')};
  useEffect(()=>{if(tab==='learn' && level==='初階')preloadKana(row.map(x=>x.char))},[tab,script,family,level]);
@@ -113,22 +123,24 @@ function App(){
    if(at+1>=paper.length){setSessionDone(true);setPicked(null)}
    else {setAt(x=>x+1);setPicked(null)}
  }
- function navButton(key,title,glyph){return <button key={key} aria-current={tab===key?'page':undefined} className={'navButton '+(tab===key?'current':'')} onClick={()=>go(key)}><span aria-hidden="true">{glyph}</span><span>{title}</span></button>}
+ function navButton(key,title,glyph){return <button key={key} type="button" aria-current={tab===key?'page':undefined} className={'navButton '+(tab===key?'current':'')} onClick={()=>go(key)}><span className="navIcon" aria-hidden="true">{glyph}</span><span>{title}</span></button>}
  return <div className="app">
   <aside className="sidebar">
-   <button className="logo" onClick={()=>go('home')}><span className="logoMark">あ</span><span><strong>Kana Journey</strong><small>我的日文學習旅程</small></span></button>
+   <button className="logo" onClick={()=>go('home')}><img className="brandIcon" src={APP_ICON} alt=""/><span><strong>Kana Journey</strong><small>我的日文學習旅程</small></span></button>
    <nav aria-label="主要選單">
-    {navButton('home','首頁','⌂')}{navButton('learn','學習','あ')}{navButton('words','單字','本')}{navButton('quiz','測驗','✓')}
+    {navButton('home','首頁',<House size={22}/>)}{navButton('learn','學習',<BookOpen size={22}/>)}{navButton('words','單字',<Layers3 size={22}/>)}{navButton('quiz','測驗',<ClipboardCheck size={22}/>)}{navButton('settings','設定',<Settings2 size={22}/>)}
    </nav>
    <div className="sidebarFoot">每天 30 分鐘，持續一點點進步</div>
   </aside>
-  <main className="content">
-   <div className="appTop"><div><span className="smallOverline">JAPANESE LEARNING</span><h1>{({home:'今天也來學日文',learn:'五十音・課程',words:'單字練習',quiz:'隨機測驗'})[tab]}</h1></div><span className="version">v{VERSION}</span></div>
+  <main className="content" ref={contentRef} id="app-scroll">
+   <header className="appTop">
+    <div className="appTitle"><img src={APP_ICON} alt="" className="headerIcon"/><div><span className="smallOverline">KANA JOURNEY</span><h1>{({home:'今天也來學日文',learn:level==='初階'?'五十音學習':'課程學習',words:'單字練習',quiz:'隨機測驗',settings:'設定'})[tab]}</h1></div></div>
+    {tab!=='settings'&&<button className="headerSettings" type="button" aria-label="開啟設定" onClick={()=>go('settings')}><Settings2 size={22}/></button>}
+   </header>
    {tab==='home'&&<section className="page">
     <div className="heroSimple"><div><span className="eyebrow">每日 30 分鐘</span><h2>一步一步，<br/>從五十音走向日常對話。</h2><p>一次學一小組、一次練一個主題。</p></div><span className="heroSymbol">あ</span></div>
-    <div className="sectionHeading"><div><h2>選擇目前程度</h2><p>初學者從「初階」開始，不需要直接挑戰 N5。</p></div></div>
-    <div className="levels" role="group" aria-label="學習程度">{levels.map(v=><button key={v.id} className={level===v.id?'on':''} onClick={()=>changeLevel(v.id)}>{v.id}</button>)}</div>
-    <div className="levelSummary"><div><strong>{level}・{levels.find(x=>x.id===level)?.subtitle}</strong><p>{levels.find(x=>x.id===level)?.description}</p></div><span className="dotBadge">目前階段</span></div>
+    <div className="sectionHeading"><div><h2>繼續你的學習</h2><p>今天先完成一個小目標。</p></div></div>
+    <button className="levelShortcut" onClick={()=>go('settings')} aria-label="前往設定調整目前程度"><span className="levelSymbol">文</span><span><small>目前程度</small><strong>{level}・{levels.find(x=>x.id===level)?.subtitle}</strong></span><ChevronRight size={19}/></button>
     <div className="actionPair"><button className="routeCard" onClick={()=>go('learn')}><span className="routeIcon">あ</span><strong>{level==='初階'?'學習五十音':'本級重點單字'}</strong><span>循序學習・每次一小組</span><b>開始學習 →</b></button><button className="routeCard" onClick={()=>beginQuizFromHome()}><span className="routeIcon warm">✓</span><strong>今天的 10 題練習</strong><span>題目和選項隨機排列</span><b>開始測驗 →</b></button></div>
     <div className="miniStats"><span>已作答 <strong>{stats.total||0}</strong> 題</span><span>正確率 <strong>{success}%</strong></span><span>待複習 <strong>{Object.values(wrong).filter(n=>n>0).length}</strong> 題</span></div>
    </section>}
@@ -168,6 +180,35 @@ function App(){
      <button className="quitTest" onClick={()=>{setPaper([]);setPicked(null)}}>結束本回合</button>
     </div>}
    </section>}
+   {tab==='settings'&&<section className="page narrow settingsPage">
+      <div className="settingsIntro"><h2>個人化學習</h2><p>讓 Kana Journey 符合你的程度與使用習慣。</p></div>
+      <div className="settingsGroup">
+       <div className="settingsHeading"><BookOpen size={19}/><span>學習設定</span></div>
+       <label className="settingsField" htmlFor="study-level"><span><strong>目前程度</strong><small>變更後套用至單字與測驗</small></span>
+        <span className="selectWrap"><select id="study-level" value={level} onChange={e=>changeLevel(e.target.value)}>{levels.map(v=><option key={v.id} value={v.id}>{v.id}</option>)}</select><ChevronRight size={16}/></span>
+       </label>
+       <div className="settingsDescription">{levels.find(x=>x.id===level)?.description}</div>
+      </div>
+      <div className="settingsGroup">
+       <div className="settingsHeading"><Sun size={19}/><span>外觀</span></div>
+       <div className="settingsOptionTitle"><strong>顯示模式</strong><small>自訂整個 App 的顏色</small></div>
+       <div className="themeChoices" role="group" aria-label="切換亮暗模式">
+        <button type="button" className={theme==='light'?'selected':''} onClick={()=>changeTheme('light')} aria-pressed={theme==='light'}><Sun size={19}/> 淺色模式</button>
+        <button type="button" className={theme==='dark'?'selected':''} onClick={()=>changeTheme('dark')} aria-pressed={theme==='dark'}><Moon size={19}/> 深色模式</button>
+       </div>
+      </div>
+      <div className="settingsGroup">
+       <div className="settingsHeading"><Share2 size={19}/><span>安裝到 iPhone</span></div>
+       <p className="installInstructions">使用 Safari 開啟本網站，點選「分享」，再選「加入主畫面」，就能從桌面圖示啟動 Kana Journey。</p>
+       <div className="installHint">加入主畫面後會以獨立 App 視窗開啟，不需要 App Store。</div>
+      </div>
+      <div className="settingsGroup">
+       <div className="settingsHeading"><Info size={19}/><span>關於 App</span></div>
+       <div className="settingsRow"><span>應用程式</span><strong>Kana Journey</strong></div>
+       <div className="settingsRow"><span>目前版本</span><strong>v{VERSION}</strong></div>
+       <div className="settingsRow"><span>資料儲存</span><strong>此裝置瀏覽器</strong></div>
+      </div>
+     </section>}
    <footer>學習資料儲存於此裝置・題目為原創練習題，非 JLPT 官方歷屆試題・<a href="https://www.jlpt.jp/tw/samples/sampleindex.html" target="_blank" rel="noreferrer">官方樣題</a></footer>
   </main>
  </div>;
