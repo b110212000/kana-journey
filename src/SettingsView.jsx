@@ -26,7 +26,7 @@ export default function SettingsView({
   const hasNew=update.available;
   const checkUpdate=async()=>{
     const outcome=await update.check();
-    if(outcome==='available')notify('發現新版本 v'+update.latest+'，可以立即更新。');
+    if(outcome==='available')notify('偵測到新版本，現在可以立即更新。');
     else if(outcome==='current')notify('YOMIO 已是最新版本 v'+version+'。');
     else if(outcome==='offline')notify('目前沒有網路，請連線後再檢查。','error');
     else notify('暫時無法檢查更新，請稍後重試。','error');
@@ -64,7 +64,7 @@ export default function SettingsView({
 
       <SettingSection id="sharing" icon={Share2} title="分享與安裝"
         summary="分享連結、加入手機主畫面" open={open==='sharing'} onToggle={onToggle}>
-        <AppSharing compact/>
+        <AppSharing/>
       </SettingSection>
 
       <SettingSection id="update" icon={RefreshCw} title="版本更新"
