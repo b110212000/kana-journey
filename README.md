@@ -1,4 +1,4 @@
-# YOMIO v1.5.1
+# YOMIO v1.6.0
 
 以手機優先的日文學習網頁 App：一次學一小組五十音、一次練一張單字卡、一次回答一道測驗。透過 GitHub Pages 發佈，無後端及 AI Token。
 
@@ -98,3 +98,15 @@ https://b110212000.github.io/kana-journey/
 - 測驗完成後儲存成績、分享／複製成績、儲存成績圖片使用相同 Toast，移除舊的 `shareStatus` 底部提示。
 - 測驗答題正誤解析、目前音檔播放狀態等屬於學習內容，不會被 3 秒 Toast 取代，以免影響閱讀。
 - GitHub 追蹤：[#2](https://github.com/b110212000/kana-journey/issues/2)
+
+## v1.6.0：收合式設定與版本更新（Issue #3）
+
+- **簡潔設定首頁**：設定項目改為「學習程度／顯示模式／分享與安裝／版本更新／關於 YOMIO」五列。平常全部收起；點擊展開需要的項目，再點一次收起或選其他列。一次最多只展開一組。
+- **保留功能**：程度選擇、Light / Dark Mode、分享 App、複製網址、加入主畫面、Toast 提示與本機學習紀錄沿用原有實作。
+- **版本資訊自動生成**：`npm run build` 讀取 `package.json.version` 並輸出 `dist/version.json`，由 GitHub Actions 檢查內容與 package 一致後再部署。React 本身也從同一 package 讀取目前執行版本。
+- **發現更新**：App 初次開啟、重新回前景、網路恢復、以及每 10 分鐘，向 GitHub Pages 請求帶時間戳與 `cache: 'no-store'` 的 `version.json`。以三段式版本號比較，只有伺服器已發布版本大於 App 內版本才認定為新版。
+- **更新紅點**：偵測到新版本時，底部分頁「設定」及非設定頁右上設定圖示顯示紅點，版本更新列也顯示「有更新」。
+- **立即更新**：「設定 → 版本更新 → 立即更新」以 cache-busting URL 重新載入 GitHub Pages 最新程式，不刪除原本的 localStorage。若已是最新版則顯示「檢查更新」，失敗／離線會提示，不會宣稱更新成功。
+- **無後端**：是網站 PWA 程式更新（不是 App Store 更新）。沒有 Service Worker，因此仍受 GitHub Pages 發布與 iOS 網頁快取影響；版本資訊可能需要一小段時間才會與實際發布一致。
+- **首版限制**：舊版 v1.5.1 尚未具備更新偵測功能，因此**紅點從 v1.6.0 安裝後的未來版本更新才會開始生效**。打開 v1.6.0 本身不應顯示更新紅點。
+- [GitHub Issue #3](https://github.com/b110212000/kana-journey/issues/3)
