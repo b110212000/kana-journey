@@ -1,4 +1,4 @@
-# YOMIO v1.5.0
+# YOMIO v1.5.1
 
 以手機優先的日文學習網頁 App：一次學一小組五十音、一次練一張單字卡、一次回答一道測驗。透過 GitHub Pages 發佈，無後端及 AI Token。
 
@@ -87,3 +87,14 @@ https://b110212000.github.io/kana-journey/
 - **已安裝狀態**：以 PWA standalone 模式開啟時顯示已從主畫面使用的提示，不重複引導安裝。
 - **相容性**：維持原網址、`localStorage` 學習紀錄、程度設定、Light / Dark Mode、iPhone Safe Area，以及底部分頁。分享與複製均為使用者主動觸發，不使用後端或付費服務。
 - GitHub 追蹤：[#1](https://github.com/b110212000/kana-journey/issues/1)
+
+## v1.5.1：全域頂部 Toast 通知（Issue #2）
+
+- 操作成功／錯誤提示改用 `ToastProvider` + `useToast`：所有頁面共用，不在按鈕下方新增通知區塊。
+- Toast 固定於整個 App 上層，`top: calc(env(safe-area-inset-top, 0px) + 18px)`（行動版），避開 iPhone 動態島／瀏海，與中間內容捲動無關。
+- 顯示約 **3000ms** 後自動消失；連續觸發新通知時重新計時，舊計時器會清除。
+- Light / Dark Mode 都使用相同的設計變數，成功與錯誤採不同圖示及顏色；提供 `aria-live` 語意與減少動畫設定。
+- 設定頁「分享 App」「複製連結」「複製安裝連結」「安裝 App」的操作結果都採 Toast；取消原生分享不會誤報成功。
+- 測驗完成後儲存成績、分享／複製成績、儲存成績圖片使用相同 Toast，移除舊的 `shareStatus` 底部提示。
+- 測驗答題正誤解析、目前音檔播放狀態等屬於學習內容，不會被 3 秒 Toast 取代，以免影響閱讀。
+- GitHub 追蹤：[#2](https://github.com/b110212000/kana-journey/issues/2)
