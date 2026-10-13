@@ -1,0 +1,185 @@
+/* Kana Journey v1.2 — native-style, device-safe shell and theme system */
+:root{
+ --app-bg:#f7f9f8;--app-card:#fff;--app-text:#233d43;--app-muted:#71858d;
+ --app-line:#e2ebe9;--app-accent:#128c78;--app-accent-text:#fff;
+ --app-soft:#eaf7f1;--app-soft-text:#117b6c;--app-input:#f3f7f5;
+ --app-hero:#e7f6ee;--app-hero-line:#d3eadf;--app-shadow:0 5px 18px #1d3b4008;
+ --app-warn:#c88156;--app-error:#9a3b42;
+}
+:root[data-theme=dark]{
+ --app-bg:#101a24;--app-card:#1b2a35;--app-text:#edf7f6;--app-muted:#9aadb8;
+ --app-line:#324751;--app-accent:#57d1b5;--app-accent-text:#092522;
+ --app-soft:#243f40;--app-soft-text:#7ee6c9;--app-input:#253945;
+ --app-hero:#1b3d3e;--app-hero-line:#285354;--app-shadow:0 5px 18px #050f161f;
+ --app-warn:#efc193;--app-error:#f3a5a7;
+}
+html{height:100%;background:var(--app-bg);overflow:hidden}
+body,#root{height:100%;overflow:hidden;margin:0;background:var(--app-bg);color:var(--app-text)}
+body{overscroll-behavior:none}
+button,select{touch-action:manipulation}
+button:focus-visible,select:focus-visible{outline:3px solid var(--app-accent);outline-offset:2px}
+.app{height:100vh;height:100dvh;min-height:0;overflow:hidden;background:var(--app-bg);color:var(--app-text)}
+.sidebar{height:100%;min-height:0;border-color:var(--app-line);background:var(--app-card);color:var(--app-text)}
+.logo{color:var(--app-text)}
+.brandIcon{width:42px;height:42px;border-radius:12px;box-shadow:var(--app-shadow);object-fit:cover}
+.logo small,.sidebarFoot{color:var(--app-muted)}
+.navButton{color:var(--app-muted)}
+.navButton.current,.navButton:hover{background:var(--app-soft);color:var(--app-soft-text)}
+.navIcon{width:28px;height:28px;display:grid;place-items:center}
+.navIcon svg{stroke:currentColor}
+.content{height:100%;min-height:0;min-width:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-top:0}
+.appTop{
+ position:sticky;top:0;z-index:10;
+ display:flex;align-items:center;justify-content:space-between;gap:14px;
+ margin:0 0 22px;padding:18px 0 17px;
+ background:var(--app-bg);border-bottom:1px solid var(--app-line);
+ min-height:87px;
+}
+.appTitle{display:flex;align-items:center;gap:12px;min-width:0}
+.appTitle>div{min-width:0}
+.headerIcon{height:44px;width:44px;flex:0 0 auto;border-radius:12px}
+.appTop h1{color:var(--app-text);font-size:24px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:4px 0 0}
+.smallOverline,.eyebrow{color:var(--app-accent)}
+.headerSettings{background:var(--app-card);color:var(--app-text);border:1px solid var(--app-line);border-radius:14px;width:44px;height:44px;display:grid;place-items:center;flex:0 0 auto}
+.headerSettings:hover{background:var(--app-soft);color:var(--app-soft-text)}
+.page,.lessonTitle,.quizHeader{color:var(--app-text)}
+.sectionHeading h2,.lessonTitle h2,.quizHeader h2{color:var(--app-text)}
+.sectionHeading p,.lessonTitle p,.quizHeader p{color:var(--app-muted)}
+.heroSimple{background:var(--app-hero);border-color:var(--app-hero-line)}
+.heroSimple h2{color:var(--app-text)}
+.heroSimple p{color:var(--app-muted)}
+.heroSymbol{color:var(--app-accent)}
+.levelShortcut{
+ display:flex;align-items:center;gap:13px;width:100%;padding:16px 18px;
+ border:1px solid var(--app-line);background:var(--app-card);color:var(--app-text);
+ border-radius:16px;text-align:left;box-shadow:var(--app-shadow)
+}
+.levelShortcut>.levelSymbol{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;
+ background:var(--app-soft);color:var(--app-soft-text);font-size:21px;font-weight:700}
+.levelShortcut>span:nth-child(2){display:grid;gap:4px;flex:1;min-width:0}
+.levelShortcut small{color:var(--app-muted);font-size:11px}
+.levelShortcut strong{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.levelShortcut>svg{color:var(--app-muted)}
+.levelShortcut:hover{border-color:var(--app-accent)}
+.routeCard,.levelSummary,.studyCard,.vocabFlash,.testSetup,.testCard,.resultCard{color:var(--app-text);background:var(--app-card);border-color:var(--app-line);box-shadow:var(--app-shadow)}
+.routeCard strong,.routeCard b,.routeCard>span:not(.routeIcon){color:var(--app-text)}
+.routeCard>span:not(.routeIcon){color:var(--app-muted)}
+.routeCard b{color:var(--app-accent)}
+.routeIcon{background:var(--app-soft);color:var(--app-soft-text)}
+.routeIcon.warm{background:var(--app-input);color:var(--app-warn)}
+.miniStats,.miniStats strong{color:var(--app-muted)}
+.miniStats strong{color:var(--app-text)}
+.switchTabs{background:var(--app-input)}
+.switchTabs button{color:var(--app-muted)}
+.switchTabs button.active{color:var(--app-accent);background:var(--app-card)}
+.rowScroll button,.centerNav button{background:var(--app-card);color:var(--app-muted);border-color:var(--app-line)}
+.rowScroll button.active{background:var(--app-soft);color:var(--app-soft-text);border-color:var(--app-accent)}
+.studyHead span,.cardCount,.kanaRow button small{color:var(--app-muted)}
+.kanaRow{border-color:var(--app-line)}
+.kanaRow button{background:var(--app-card);border-color:var(--app-line);color:var(--app-text)}
+.kanaRow button.chosen,.kanaRow button:hover{background:var(--app-soft);border-color:var(--app-accent);box-shadow:none}
+.focusChar,.wordJP,.question,.vocabFlash h3{color:var(--app-text)}
+.focusKana strong{color:var(--app-accent)}
+.focusKana>span:last-child,.audioFeedback,.wordHidden{color:var(--app-muted)}
+.playButton,.primary{background:var(--app-accent);color:var(--app-accent-text)}
+.playButton:hover,.primary:hover{filter:brightness(.95);background:var(--app-accent)}
+.soundTip,.example,.explain{background:var(--app-input)}
+.soundTip strong,.soundTip p,.explain p{color:var(--app-muted)}
+.textButton,.exampleSound{color:var(--app-accent)}
+.exampleSound,.outlineButton{background:var(--app-card);border-color:var(--app-line);color:var(--app-accent)}
+.centerNav button:hover,.exampleSound:hover{background:var(--app-soft)}
+.secondaryWide{background:var(--app-soft);border-color:var(--app-line);color:var(--app-soft-text)}
+.wordReveal .phonetic,.explain strong{color:var(--app-accent)}
+.example small,.muted,.quizMeta,.quitTest,.resultCard p,.resultCard .bare{color:var(--app-muted)}
+.chipGroup button,.answers button,.retryBox button{background:var(--app-card);border-color:var(--app-line);color:var(--app-text)}
+.chipGroup button.active{background:var(--app-soft);border-color:var(--app-accent);color:var(--app-soft-text)}
+.answers button:not(:disabled):hover{background:var(--app-soft);border-color:var(--app-accent)}
+.answers button.right{background:var(--app-soft);border-color:var(--app-accent)}
+.answers button.wrong{background:var(--app-input);border-color:var(--app-error)}
+.answerLetter{background:var(--app-input);color:var(--app-muted)}
+.progressBar{background:var(--app-input)}
+.progressBar>div{background:var(--app-accent)}
+.testDivider{border-color:var(--app-line)}
+.resultScore{color:var(--app-accent)}
+.resultScore small{color:var(--app-muted)}
+.retryBox>span,.retryBox strong{color:var(--app-muted)}
+footer,footer a{color:var(--app-muted)}
+
+/* Grouped iOS-style Settings */
+.settingsPage{gap:17px}
+.settingsIntro h2{font-size:20px;margin:0 0 7px}
+.settingsIntro p{font-size:13px;color:var(--app-muted);margin:0}
+.settingsGroup{background:var(--app-card);border:1px solid var(--app-line);border-radius:17px;
+ padding:18px 20px;box-shadow:var(--app-shadow)}
+.settingsHeading{display:flex;align-items:center;gap:9px;color:var(--app-accent);font-size:13px;font-weight:700;margin-bottom:17px}
+.settingsField{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--app-text)}
+.settingsField>span:first-child{display:grid;gap:5px}
+.settingsField strong,.settingsOptionTitle strong{font-size:14px}
+.settingsField small,.settingsOptionTitle small{font-size:12px;color:var(--app-muted)}
+.selectWrap{display:flex;align-items:center;position:relative;min-width:116px}
+.selectWrap select{width:100%;appearance:none;-webkit-appearance:none;
+ border:1px solid var(--app-line);border-radius:11px;background:var(--app-input);color:var(--app-text);
+ padding:11px 35px 11px 15px;font-size:14px;font-weight:700}
+.selectWrap svg{position:absolute;right:10px;transform:rotate(90deg);pointer-events:none;color:var(--app-muted)}
+.settingsDescription{font-size:12px;line-height:1.7;color:var(--app-muted);margin-top:14px;padding-top:13px;border-top:1px solid var(--app-line)}
+.settingsOptionTitle{display:grid;gap:5px;margin-bottom:13px}
+.themeChoices{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.themeChoices button{display:flex;align-items:center;justify-content:center;gap:8px;
+ background:var(--app-input);border:1px solid var(--app-line);border-radius:12px;
+ color:var(--app-muted);padding:14px 8px;font-size:13px;font-weight:700}
+.themeChoices button.selected{background:var(--app-soft);color:var(--app-soft-text);border-color:var(--app-accent)}
+.installInstructions{font-size:13px;line-height:1.85;color:var(--app-text);margin:0 0 11px}
+.installHint{font-size:12px;line-height:1.6;color:var(--app-muted)}
+.settingsRow{display:flex;justify-content:space-between;gap:12px;padding:12px 0;font-size:13px}
+.settingsRow+.settingsRow{border-top:1px solid var(--app-line)}
+.settingsRow>span{color:var(--app-muted)}
+.settingsRow strong{font-weight:600;color:var(--app-text);text-align:right}
+@media(min-width:681px){
+ .content{padding-bottom:40px}
+ .appTop{padding-top:22px}
+}
+@media(max-width:680px){
+ .app{height:100vh;height:100dvh;overflow:hidden}
+ .sidebar{position:fixed;z-index:30;bottom:0;left:0;right:0;top:auto;
+   width:100%;height:calc(66px + env(safe-area-inset-bottom,0px));min-height:0;
+   padding:0 0 env(safe-area-inset-bottom,0px);background:var(--app-card);
+   border-top:1px solid var(--app-line);border-right:0;box-shadow:0 -3px 18px #0000000a}
+ .sidebar nav{height:66px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;align-items:stretch}
+ .navButton{height:66px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;
+   padding:7px 3px;border-radius:0;color:var(--app-muted);font-size:10px;min-width:0}
+ .navButton.current{background:transparent;color:var(--app-accent)}
+ .navIcon{width:25px;height:25px}
+ .navIcon svg{width:22px;height:22px}
+ .content{height:100%;max-width:720px;margin:0 auto;
+  padding:0 18px calc(89px + env(safe-area-inset-bottom,0px));
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+ .appTop{top:0;position:sticky;z-index:15;background:var(--app-bg);
+   margin:0 -18px 20px;padding:calc(10px + env(safe-area-inset-top,0px)) 18px 12px;
+   min-height:calc(73px + env(safe-area-inset-top,0px));}
+ .appTop h1{font-size:21px}
+ .headerIcon{height:39px;width:39px;border-radius:11px}
+ .headerSettings{width:42px;height:42px;border-radius:13px}
+ .heroSimple{padding:23px;min-height:155px}
+ .heroSimple h2{font-size:20px}
+ .actionPair{grid-template-columns:1fr;gap:11px}
+ .routeCard{min-height:92px;padding:15px 17px;display:grid;
+  grid-template-columns:48px minmax(0,1fr) 22px;grid-template-rows:1fr 1fr;
+  align-items:center;column-gap:11px;row-gap:3px}
+ .routeIcon{grid-column:1;grid-row:1/3}
+ .routeCard strong{grid-column:2;grid-row:1;margin:0;align-self:end;font-size:15px}
+ .routeCard>span:not(.routeIcon){grid-column:2;grid-row:2;align-self:start}
+ .routeCard b{grid-column:3;grid-row:1/3;font-size:0;align-self:center}
+ .routeCard b::after{content:'›';font-size:26px;font-weight:400}
+ .miniStats{margin-top:0;padding:11px 0 0;justify-content:space-around}
+ .page{gap:17px}
+ .levelShortcut{padding:14px 15px}
+ .lessonTitle h2,.quizHeader h2{font-size:19px}
+ .studyCard,.testCard,.vocabFlash,.testSetup,.resultCard{border-radius:17px;padding:19px}
+ .kanaRow{gap:5px}.kanaRow button{padding:11px 2px;border-radius:11px}
+ .kanaRow button span{font-size:clamp(26px,7.5vw,33px)}
+ .kanaRow.three button{flex:0 1 91px}
+ .settingsGroup{padding:17px 17px}
+ .settingsIntro h2{font-size:18px}
+ footer{margin-top:24px}
+}
+@media(max-width:350px){.content{padding-left:12px;padding-right:12px}.appTop{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}.themeChoices button{font-size:12px;gap:4px}}
