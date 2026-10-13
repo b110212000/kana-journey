@@ -1,0 +1,43 @@
+/* YOMIO: share + install actions in the iPhone-style Settings screen. */
+.appConnectGroup{display:grid;gap:15px}
+.appConnectGroup .settingsHeading{margin-bottom:0}
+.appConnectDescription{font-size:13px;color:var(--app-muted);line-height:1.85;margin:0}
+.appConnectLink{display:flex;align-items:center;gap:9px;background:var(--app-input);border:1px solid var(--app-line);
+ border-radius:12px;padding:9px 12px;min-width:0;color:var(--app-muted)}
+.appConnectLink input{width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--app-text);
+ font-size:13px;text-overflow:ellipsis;user-select:text;-webkit-user-select:text}
+.appConnectLink input:focus{outline:0}
+.appConnectLink svg{flex:0 0 auto}
+.appConnectActions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.appConnectActions button,.appInstallCopy,.appInstallDirect{display:flex;align-items:center;justify-content:center;gap:9px;
+ border-radius:12px;font-size:13px;font-weight:750;min-height:48px;padding:12px 10px;line-height:1.4}
+.appConnectPrimary,.appInstallDirect{border:1px solid var(--app-accent);background:var(--app-accent);color:var(--app-accent-text)}
+.appConnectSecondary,.appInstallCopy{border:1px solid var(--app-line);background:var(--app-input);color:var(--app-soft-text)}
+.appConnectActions button:active,.appInstallCopy:active,.appInstallDirect:active{transform:scale(.985)}
+.appInstallSteps{display:grid;gap:12px;padding:17px;border:1px solid var(--app-line);
+ border-radius:14px;background:var(--app-input)}
+.appInstallSteps>div{display:flex;gap:13px;align-items:flex-start}
+.appInstallSteps span{flex:0 0 28px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+ background:var(--app-soft);color:var(--app-soft-text);font-weight:800;font-size:13px}
+.appInstallSteps p{color:var(--app-text);font-size:13px;line-height:1.8;margin:1px 0 0}
+.appInstallSteps strong{color:var(--app-accent)}
+.appInstallCopy,.appInstallDirect{width:100%}
+.appInstalled{display:flex;align-items:center;gap:9px;border-radius:13px;padding:13px 14px;
+ background:var(--app-soft);color:var(--app-soft-text);font-size:12px;line-height:1.6}
+.appInstalled svg{flex:0 0 auto}
+.appConnectFeedback{display:flex;align-items:center;gap:7px;line-height:1.7;font-size:12px;margin:0;
+ padding:11px 13px;border-radius:11px;border:1px solid var(--app-line);
+ color:var(--app-text);background:var(--app-input)}
+.appConnectFeedback.ok{color:var(--app-soft-text);background:var(--app-soft);border-color:var(--app-hero-line)}
+.appConnectFeedback svg{flex:0 0 auto}
+.appConnectFootnote{color:var(--app-muted);font-size:11px;line-height:1.75;margin:0}
+@media(max-width:680px){
+ .appConnectGroup{gap:14px}
+ .appConnectActions button{font-size:12px;min-height:46px;gap:7px}
+ .appInstallSteps{padding:14px;gap:12px}
+ .appInstallSteps p{font-size:12px}
+}
+@media(max-width:350px){
+ .appConnectActions{gap:7px}
+ .appConnectActions button{padding:11px 5px;gap:5px}
+}
