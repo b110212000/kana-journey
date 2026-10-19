@@ -1,7 +1,7 @@
 const LYRIC_API = 'https://lrclib.net';
 const TRANSLATE_API = 'https://api.mymemory.translated.net/get';
 let lyricRetryAfter = 0;
-const CLIENT_HEADERS = {'Lrclib-Client': 'YOMIO/1.9.0 (https://github.com/b110212000/kana-journey)'};
+const CLIENT_HEADERS = {'Lrclib-Client': 'YOMIO/1.9.1 (https://github.com/b110212000/kana-journey)'};
 export const MAX_LINES = 180;
 
 export function splitLyrics(text) {
