@@ -57,6 +57,11 @@ export default function SongStudy({onBack}) {
     reloadSaved();
     return () => {searchController.current?.abort(); translationController.current?.abort(); translationController.current=null;};
   }, []);
+  useEffect(() => {
+    // Keep each nested screen at its own top, even after scrolling the history/results.
+    const content = document.getElementById('app-scroll');
+    if (content) content.scrollTop = 0;
+  }, [screen]);
 
   function changeActive(next, persist = true) {
     activeRef.current = next;
@@ -71,6 +76,8 @@ export default function SongStudy({onBack}) {
   }
   function returnLibrary() {
     searchController.current?.abort();
+    searchController.current = null;
+    setSearching(false);
     translationController.current?.abort();
     translationController.current = null;
     activeRef.current = null;
@@ -85,12 +92,16 @@ export default function SongStudy({onBack}) {
   }
   function enterSearch() {
     searchController.current?.abort();
+    searchController.current = null;
+    setSearching(false);
     setResults([]);
     setManual(false);
     setScreen('search');
   }
   function openSong(song) {
     searchController.current?.abort();
+    searchController.current = null;
+    setSearching(false);
     translationController.current?.abort();
     translationController.current = null;
     setTranslationState({running:false, done:0, total:0});
@@ -174,6 +185,11 @@ export default function SongStudy({onBack}) {
       if (line && !chosen.translations?.[index]) a.push(index);
       return a;
     }, []);
+    if (!pending.length) {
+      translationController.current = null;
+      setTranslationState({running:false, done:0, total:0});
+      return;
+    }
     let done = 0, chars = 0, skipped = false;
     const memo = new Map();
     setTranslationState({running:true, done:0, total:pending.length});
@@ -202,6 +218,7 @@ export default function SongStudy({onBack}) {
         await new Promise(resolve => setTimeout(resolve, 200));
       }
       if (!controller.signal.aborted && skipped) notify('部分歌詞太長，請手動填寫對應中文。', 'error');
+      else if (!controller.signal.aborted && done === pending.length) notify('歌詞翻譯完成。');
     } catch (error) {
       if (error.name !== 'AbortError' && !controller.signal.aborted) {
         notify(error.message || '翻譯失敗，請稍後重試。', 'error');
