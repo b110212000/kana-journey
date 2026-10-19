@@ -8,7 +8,7 @@ import {useToast} from './ToastProvider';
 import './songStudy.css';
 
 const MAX_TRANSLATED_CHARS_PER_RUN = 3500;
-const CLIENT_NOTE = '免費外部服務可能有額度、網路或著作權限制。歌曲內容只儲存於這台裝置，不會上傳到 GitHub。';
+const CLIENT_NOTE = '免費服務可能有額度或歌詞著作權限制。收藏只存這台裝置，不上傳 GitHub；自動翻譯時，日文句子會傳送給 MyMemory 處理。';
 const lookup = new Map(gradedWords.map(item => [item.jp, item]));
 const RUBY_PATTERN = /<ruby>([^<]*)<rp>[^<]*<\/rp><rt>([^<]*)<\/rt><rp>[^<]*<\/rp><\/ruby>|<ruby>([^<]*)<rt>([^<]*)<\/rt><\/ruby>/g;
 
@@ -57,7 +57,7 @@ export default function SongStudy({onBack}) {
   }
   useEffect(() => {
     reloadSaved();
-    return () => {searchController.current?.abort(); translationController.current?.abort();};
+    return () => {searchController.current?.abort(); translationController.current?.abort(); translationController.current=null;};
   }, []);
 
   function changeActive(next, persist = true) {
@@ -73,6 +73,7 @@ export default function SongStudy({onBack}) {
   }
   function openSong(song) {
     translationController.current?.abort();
+    translationController.current = null;
     setTranslationState({running:false, done:0, total:0, error:''});
     setFuriganaError('');
     setEditing(null);
@@ -127,7 +128,7 @@ export default function SongStudy({onBack}) {
   function deleteSaved(song) {
     if (!window.confirm('確定要刪除「' + song.title + '」的本機歌詞及翻譯嗎？')) return;
     removeSong(song.id).then(() => {
-      if (activeRef.current?.id === song.id) {translationController.current?.abort(); activeRef.current = null; setActive(null);}
+      if (activeRef.current?.id === song.id) {translationController.current?.abort(); translationController.current=null; activeRef.current = null; setActive(null);}
       reloadSaved(); notify('已移除本機歌曲。');
     }).catch(() => notify('刪除失敗，請稍後重試。', 'error'));
   }
@@ -236,7 +237,7 @@ export default function SongStudy({onBack}) {
     {manual && <form className="songPanel songManual" onSubmit={addManual}><label>歌名（選填）<input value={title} onChange={e=>setTitle(e.target.value)} maxLength={100} placeholder="歌曲名稱"/></label><label>歌手（選填）<input value={artist} onChange={e=>setArtist(e.target.value)} maxLength={100} placeholder="歌手"/></label><label>貼上日文歌詞<textarea value={pasted} onChange={e=>setPasted(e.target.value)} rows={6} maxLength={20000} placeholder="每一句一行，支援帶時間戳記的 LRC 歌詞"/></label><button className="songPrimary" type="submit" disabled={!pasted.trim()}>建立逐句學習</button></form>}
     {!active && saved.length > 0 && <div className="songPanel songSaved"><h3><Bookmark size={17}/> 已儲存的歌曲</h3>{saved.map(item => <div className="songSavedRow" key={item.id}><button type="button" onClick={()=>openSong(item)}><strong>{item.title}</strong><small>{item.artist || '我的收藏'} · {item.lines?.length || 0} 行</small></button><button className="songDelete" type="button" title="刪除本機歌曲" aria-label={'刪除 '+item.title} onClick={()=>deleteSaved(item)}><Trash2 size={17}/></button></div>)}</div>}
     {active && <div className="songActive">
-      <div className="songTrackHeader"><span className="songRecordIcon"><Music2 size={25}/></span><div><h3>{active.title}</h3><p>{active.artist || '私人學習'} · {active.source} · {active.lines.length} 行</p></div><button aria-label="關閉歌曲" type="button" onClick={()=>{translationController.current?.abort();activeRef.current=null;setActive(null);}}><X size={20}/></button></div>
+      <div className="songTrackHeader"><span className="songRecordIcon"><Music2 size={25}/></span><div><h3>{active.title}</h3><p>{active.artist || '私人學習'} · {active.source} · {active.lines.length} 行</p></div><button aria-label="關閉歌曲" type="button" onClick={()=>{translationController.current?.abort();translationController.current=null;activeRef.current=null;setActive(null);}}><X size={20}/></button></div>
       <div className="songOptions">
         <label><input type="checkbox" checked={showFurigana} onChange={e=>setShowFurigana(e.target.checked)}/> 顯示漢字假名</label>
         <label><input type="checkbox" checked={showChinese} onChange={e=>setShowChinese(e.target.checked)}/> 顯示中文</label>
