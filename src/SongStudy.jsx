@@ -242,45 +242,69 @@ export default function SongStudy({onBack}) {
 
   const missing = active ? active.lines.filter((line, index) => line && !active.translations?.[index]).length : 0;
   return <section className="page narrow songStudy">
-    <div className="songIntro">
-      <button className="songBack" type="button" onClick={onBack}><ArrowLeft size={17}/> 返回學習</button>
-      <h2><Music2 size={23}/> 歌曲學日文</h2>
-      <p>搜尋喜歡的歌曲，一句日文對照一句繁體中文。全程不消耗 AI Token。</p>
-    </div>
-    <form className="songSearch" onSubmit={doSearch}>
-      <label htmlFor="song-query">歌曲名稱或歌手</label>
-      <div><input id="song-query" value={query} maxLength={120} onChange={e => setQuery(e.target.value)} placeholder="例：夜に駆ける YOASOBI" autoComplete="off"/><button type="submit" disabled={searching || !query.trim()}>{searching?<LoaderCircle size={17} className="songSpin"/>:<Search size={17}/>} 搜尋</button></div>
-    </form>
-    {searchError && <p className="songNotice" role="status">{searchError}</p>}
-    {results.length > 0 && <div className="songPanel songResults"><h3>搜尋結果</h3>{results.map(track => <button key={track.id} type="button" onClick={() => chooseResult(track)}><Music2 size={18}/><span><strong>{track.trackName || track.name}</strong><small>{track.artistName} · {track.albumName || '未標註專輯'}{track.instrumental ? ' · 純音樂' : ''}</small></span><ChevronRight size={17}/></button>)}</div>}
-    <button className="songManualToggle" type="button" aria-expanded={manual} onClick={() => setManual(!manual)}>{manual?<X size={16}/>:<Languages size={16}/>} {manual?'取消手動貼上':'找不到歌詞？自行貼上歌詞'}</button>
-    {manual && <form className="songPanel songManual" onSubmit={addManual}><label>歌名（選填）<input value={title} onChange={e=>setTitle(e.target.value)} maxLength={100} placeholder="歌曲名稱"/></label><label>歌手（選填）<input value={artist} onChange={e=>setArtist(e.target.value)} maxLength={100} placeholder="歌手"/></label><label>貼上日文歌詞<textarea value={pasted} onChange={e=>setPasted(e.target.value)} rows={6} maxLength={20000} placeholder="每一句一行，支援帶時間戳記的 LRC 歌詞"/></label><button className="songPrimary" type="submit" disabled={!pasted.trim()}>建立逐句學習</button></form>}
-    {!active && saved.length > 0 && <div className="songPanel songSaved"><h3><Bookmark size={17}/> 已儲存的歌曲</h3>{saved.map(item => <div className="songSavedRow" key={item.id}><button type="button" onClick={()=>openSong(item)}><strong>{item.title}</strong><small>{item.artist || '我的收藏'} · {item.lines?.length || 0} 行</small></button><button className="songDelete" type="button" title="刪除本機歌曲" aria-label={'刪除 '+item.title} onClick={()=>deleteSaved(item)}><Trash2 size={17}/></button></div>)}</div>}
-    {active && <div className="songActive">
-      <div className="songTrackHeader"><span className="songRecordIcon"><Music2 size={25}/></span><div><h3>{active.title}</h3><p>{active.artist || '私人學習'} · {active.source} · {active.lines.length} 行</p></div><button aria-label="關閉歌曲" type="button" onClick={()=>{translationController.current?.abort();translationController.current=null;activeRef.current=null;setActive(null);}}><X size={20}/></button></div>
-      <div className="songOptions">
-        <label><input type="checkbox" checked={showFurigana} onChange={e=>setShowFurigana(e.target.checked)}/> 顯示漢字假名</label>
-        <label><input type="checkbox" checked={showChinese} onChange={e=>setShowChinese(e.target.checked)}/> 顯示中文</label>
+    {screen==='library' && <>
+      <div className="songIntro">
+        <button className="songBack" type="button" onClick={onBack}><ArrowLeft size={17}/> 返回學習</button>
+        <h2><Music2 size={23}/> 歌曲學日文</h2>
+        <p>從喜歡的歌曲開始，把日文變成每天的練習。</p>
       </div>
-      <div className="songTranslateBar">
-        <span>{translationState.running ? '翻譯中 ' + translationState.done + '/' + translationState.total + '…' : missing===0 ? '逐句翻譯已完成' : '尚有 ' + missing + ' 句未翻譯'}</span>
-        {translationState.running ? <button type="button" onClick={()=>translationController.current?.abort()}><Square size={14}/> 停止</button> : missing > 0 && <button type="button" onClick={translateAll}>翻譯未完成句子</button>}
-      </div>
-      {translationState.error && <p className="songNotice" role="status">{translationState.error}</p>}
-      {furiganaError && <p className="songNotice" role="status">{furiganaError}</p>}
-      <div className="songLyrics" lang="ja">{active.lines.map((line, index) => <article className="songLine" key={index}>
-        <span className="songLineNumber">{String(index+1).padStart(2, '0')}</span>
-        <div className="songLineBody">
-          <p className="songJapanese"><LyricText plain={line} rubyMarkup={active.readings?.[index]} enabled={showFurigana} onWord={pickWord}/></p>
-          {showChinese && (editing===index ?
-            <div className="songEdit"><textarea rows={2} lang="zh-Hant" value={editedText} onChange={e=>setEditedText(e.target.value)} aria-label={'第 '+(index+1)+' 句中文譯文'}/><button type="button" onClick={()=>saveEdit(index)}><Check size={15}/> 儲存</button><button type="button" onClick={()=>setEditing(null)}>取消</button></div> :
-            <button type="button" className={'songChinese ' + (active.translations?.[index]?'':'songUntranslated')} lang="zh-Hant" onClick={()=>editTranslation(index)} title="點擊編輯中文翻譯">{active.translations?.[index] || (translationState.running?'翻譯中／點此手動填寫':'點此新增中文翻譯')} <span>✎</span></button>
-          )}
+      <button className="songAddButton" type="button" onClick={enterSearch}><Plus size={21}/> <span><strong>搜尋／新增歌曲</strong><small>透過歌名搜尋，或貼上自己的歌詞</small></span><ChevronRight size={18}/></button>
+      <div className="songPanel songHistory">
+        <div className="songHistoryHeading">
+          <h3><Bookmark size={18}/> 歷史紀錄</h3>
+          <span>{saved.length} 首已儲存</span>
         </div>
-      </article>)}</div>
-      {wordInfo && <div className="songWordInfo" role="status"><button aria-label="關閉單字" type="button" onClick={()=>setWordInfo(null)}><X size={15}/></button><strong>{wordInfo.kanji}（{wordInfo.reading}）</strong><p>{wordInfo.known ? wordInfo.known.zh+' · '+wordInfo.known.level : '目前內建單字庫未收錄此詞，可參考假名讀音。'}</p></div>}
-      <p className="songFinePrint">歌詞來源：{active.source}。點擊漢字查看內建單字庫；點擊中文句子可手動校正翻譯。自動標音與翻譯可能不完全準確。</p>
-    </div>}
-    <p className="songFinePrint">{CLIENT_NOTE} <a href="https://lrclib.net/docs" target="_blank" rel="noopener noreferrer">歌詞來源說明</a> · <a href="https://mymemory.translated.net/" target="_blank" rel="noopener noreferrer">翻譯服務</a></p>
+        {saved.length ? <div className="songLibraryList" aria-label="已儲存歌曲列表">
+          {saved.map(item => <div className="songSavedRow" key={item.id}>
+            <button type="button" onClick={()=>openSong(item)}>
+              <span className="songSmallIcon"><Music2 size={18}/></span>
+              <span className="songSavedDetail"><strong>{item.title}</strong><small>{item.artist || '我的歌曲'} · {item.lines?.length || 0} 行歌詞</small></span>
+              <ChevronRight size={16}/>
+            </button>
+            <button className="songDelete" type="button" aria-label={'刪除 '+item.title} title="刪除這首歌的本機資料" onClick={()=>deleteSaved(item)}><Trash2 size={17}/></button>
+          </div>)}
+        </div> : <div className="songEmptyHistory"><Music2 size={30}/><strong>還沒有學過的歌曲</strong><p>新增一首歌後，就能從這裡繼續學習。</p></div>}
+      </div>
+    </>}
+    {screen==='search' && <>
+      <div className="songIntro">
+        <button className="songBack" type="button" onClick={returnLibrary}><ArrowLeft size={17}/> 返回歌曲首頁</button>
+        <h2><Search size={23}/> 搜尋歌曲</h2>
+        <p>搜尋歌名或歌手，選擇歌曲後會進入歌詞學習。</p>
+      </div>
+      <form className="songSearch" onSubmit={doSearch}>
+        <label htmlFor="song-query">歌曲名稱或歌手</label>
+        <div><input id="song-query" value={query} maxLength={120} onChange={e => setQuery(e.target.value)} placeholder="例：夜に駆ける YOASOBI" autoComplete="off"/><button type="submit" disabled={searching || !query.trim()}>{searching?<LoaderCircle size={17} className="songSpin"/>:<Search size={17}/>} 搜尋</button></div>
+      </form>
+      {results.length > 0 && <div className="songPanel songResults"><h3>搜尋結果 · {results.length} 首</h3><div className="songResultsScroll" aria-label="搜尋結果列表">{results.map(track => <button key={track.id} type="button" onClick={() => chooseResult(track)}><Music2 size={18}/><span><strong>{track.trackName || track.name}</strong><small>{track.artistName} · {track.albumName || '未標註專輯'}{track.instrumental ? ' · 純音樂' : ''}</small></span><ChevronRight size={17}/></button>)}</div></div>}
+      <button className="songManualToggle" type="button" aria-expanded={manual} onClick={() => setManual(!manual)}>{manual?<X size={16}/>:<Languages size={16}/>} {manual?'取消手動貼上':'找不到歌詞？自行貼上歌詞'}</button>
+      {manual && <form className="songPanel songManual" onSubmit={addManual}><label>歌名（選填）<input value={title} onChange={e=>setTitle(e.target.value)} maxLength={100} placeholder="歌曲名稱"/></label><label>歌手（選填）<input value={artist} onChange={e=>setArtist(e.target.value)} maxLength={100} placeholder="歌手"/></label><label>貼上日文歌詞<textarea value={pasted} onChange={e=>setPasted(e.target.value)} rows={6} maxLength={20000} placeholder="每一句一行，支援帶時間戳記的 LRC 歌詞"/></label><button className="songPrimary" type="submit" disabled={!pasted.trim()}>建立逐句學習</button></form>}
+    </>}
+    {screen==='lyrics' && active && <>
+      <button className="songBack" type="button" onClick={returnLibrary}><ArrowLeft size={17}/> 返回歌曲首頁</button>
+      <div className="songActive">
+        <div className="songTrackHeader"><span className="songRecordIcon"><Music2 size={25}/></span><div><h3>{active.title}</h3><p>{active.artist || '我的歌曲'} · {active.source} · {active.lines.length} 行</p></div></div>
+        <div className="songOptions">
+          <label><input type="checkbox" checked={showFurigana} onChange={e=>setShowFurigana(e.target.checked)}/> 顯示漢字假名</label>
+          <label><input type="checkbox" checked={showChinese} onChange={e=>setShowChinese(e.target.checked)}/> 顯示中文</label>
+        </div>
+        <div className="songTranslateBar">
+          <span>{translationState.running ? '翻譯中 ' + translationState.done + '/' + translationState.total + '…' : missing===0 ? '逐句翻譯已完成' : '尚有 ' + missing + ' 句未翻譯'}</span>
+          {translationState.running ? <button type="button" onClick={()=>{translationController.current?.abort(); notify('已停止翻譯。');}}><Square size={14}/> 停止</button> : missing > 0 && <button type="button" onClick={translateAll}>翻譯未完成句子</button>}
+        </div>
+        <div className="songLyrics" lang="ja">{active.lines.map((line, index) => <article className="songLine" key={index}>
+          <span className="songLineNumber">{String(index+1).padStart(2, '0')}</span>
+          <div className="songLineBody">
+            <p className="songJapanese"><LyricText plain={line} rubyMarkup={active.readings?.[index]} enabled={showFurigana} onWord={pickWord}/></p>
+            {showChinese && (editing===index ?
+              <div className="songEdit"><textarea rows={2} lang="zh-Hant" value={editedText} onChange={e=>setEditedText(e.target.value)} aria-label={'第 '+(index+1)+' 句中文譯文'}/><button type="button" onClick={()=>saveEdit(index)}><Check size={15}/> 儲存</button><button type="button" onClick={()=>setEditing(null)}>取消</button></div> :
+              <button type="button" className={'songChinese ' + (active.translations?.[index]?'':'songUntranslated')} lang="zh-Hant" onClick={()=>editTranslation(index)} title="點擊編輯中文翻譯">{active.translations?.[index] || (translationState.running?'翻譯中／點此手動填寫':'點此新增中文翻譯')} <span>✎</span></button>
+            )}
+          </div>
+        </article>)}</div>
+        {wordInfo && <div className="songWordInfo" role="status"><button aria-label="關閉單字" type="button" onClick={()=>setWordInfo(null)}><X size={15}/></button><strong>{wordInfo.kanji}（{wordInfo.reading}）</strong><p>{wordInfo.known ? wordInfo.known.zh+' · '+wordInfo.known.level : '目前內建單字庫未收錄此詞，可參考假名讀音。'}</p></div>}
+        <p className="songFinePrint">歌詞來源：{active.source}。點擊漢字可查看單字，點擊中文可編輯譯文。標音與翻譯僅供學習參考。</p>
+      </div>
+    </>}
   </section>;
 }
