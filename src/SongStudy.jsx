@@ -315,7 +315,7 @@ export default function SongStudy({onBack}) {
           <label><input type="checkbox" checked={showFurigana} onChange={e=>setShowFurigana(e.target.checked)}/> 顯示漢字假名</label>
           <label><input type="checkbox" checked={showChinese} onChange={e=>setShowChinese(e.target.checked)}/> 顯示中文</label>
           {showFurigana && furiganaStatus==='loading' && <span className="songFuriganaStatus" role="status">標音字典載入中…</span>}
-          {showFurigana && furiganaStatus==='error' && <button className="songRetryFurigana" type="button" onClick={()=>setFuriganaRetry(count=>count+1)}>重試標音</button>
+          {showFurigana && furiganaStatus==='error' && <button className="songRetryFurigana" type="button" onClick={()=>setFuriganaRetry(count=>count+1)}>重試標音</button>}
         </div>
         <div className="songTranslateBar">
           <span>{translationState.running ? '翻譯中 ' + translationState.done + '/' + translationState.total + '…' : missing===0 ? '逐句翻譯已完成' : '尚有 ' + missing + ' 句未翻譯'}</span>
