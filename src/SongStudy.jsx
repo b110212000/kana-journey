@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {ArrowLeft, Bookmark, Check, ChevronRight, Languages, LoaderCircle, Music2, Search, Square, Trash2, X} from 'lucide-react';
+import {ArrowLeft, Bookmark, Check, ChevronRight, Languages, LoaderCircle, Music2, Plus, Search, Square, Trash2, X} from 'lucide-react';
 import {gradedWords} from './vocabulary';
 import {searchLyrics, splitLyrics, translateJapanese} from './songApi';
 import {getSavedSongs, saveSong, removeSong} from './songStorage';
@@ -8,7 +8,6 @@ import {useToast} from './ToastProvider';
 import './songStudy.css';
 
 const MAX_TRANSLATED_CHARS_PER_RUN = 3500;
-const CLIENT_NOTE = '免費服務可能有額度或歌詞著作權限制。收藏只存這台裝置，不上傳 GitHub；自動翻譯時，日文句子會傳送給 MyMemory 處理。';
 const lookup = new Map(gradedWords.map(item => [item.jp, item]));
 const RUBY_PATTERN = /<ruby>([^<]*)<rp>[^<]*<\/rp><rt>([^<]*)<\/rt><rp>[^<]*<\/rp><\/ruby>|<ruby>([^<]*)<rt>([^<]*)<\/rt><\/ruby>/g;
 
@@ -31,6 +30,7 @@ function LyricText({plain, rubyMarkup, enabled, onWord}) {
 
 export default function SongStudy({onBack}) {
   const notify = useToast();
+  const [screen, setScreen] = useState('library');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [saved, setSaved] = useState([]);
@@ -45,9 +45,7 @@ export default function SongStudy({onBack}) {
   const translationController = useRef(null);
   const [showFurigana, setShowFurigana] = useState(true);
   const [showChinese, setShowChinese] = useState(true);
-  const [searchError, setSearchError] = useState('');
-  const [translationState, setTranslationState] = useState({running:false, done:0, total:0, error:''});
-  const [furiganaError, setFuriganaError] = useState('');
+  const [translationState, setTranslationState] = useState({running:false, done:0, total:0});
   const [editing, setEditing] = useState(null);
   const [editedText, setEditedText] = useState('');
   const [wordInfo, setWordInfo] = useState(null);
@@ -71,14 +69,35 @@ export default function SongStudy({onBack}) {
     const next = {...change(current), updatedAt:Date.now()};
     changeActive(next);
   }
-  function openSong(song) {
+  function returnLibrary() {
+    searchController.current?.abort();
     translationController.current?.abort();
     translationController.current = null;
-    setTranslationState({running:false, done:0, total:0, error:''});
-    setFuriganaError('');
+    activeRef.current = null;
+    setActive(null);
+    setTranslationState({running:false, done:0, total:0});
+    setEditing(null);
+    setWordInfo(null);
+    setResults([]);
+    setManual(false);
+    setScreen('library');
+    reloadSaved();
+  }
+  function enterSearch() {
+    searchController.current?.abort();
+    setResults([]);
+    setManual(false);
+    setScreen('search');
+  }
+  function openSong(song) {
+    searchController.current?.abort();
+    translationController.current?.abort();
+    translationController.current = null;
+    setTranslationState({running:false, done:0, total:0});
     setEditing(null);
     setWordInfo(null);
     changeActive(song);
+    setScreen('lyrics');
   }
   async function doSearch(event) {
     event.preventDefault();
@@ -87,15 +106,15 @@ export default function SongStudy({onBack}) {
     searchController.current?.abort();
     const controller = new AbortController();
     searchController.current = controller;
-    setSearching(true); setSearchError(''); setResults([]);
+    setSearching(true); setResults([]);
     try {
       const list = await searchLyrics(keyword, controller.signal);
       if (!controller.signal.aborted) {
         setResults(list);
-        if (!list.length) setSearchError('搜尋不到這首歌，可以試著輸入歌手或直接貼上歌詞。');
+        if (!list.length) notify('找不到相關歌曲，請換個關鍵字或手動貼上歌詞。', 'error');
       }
     } catch (error) {
-      if (error.name !== 'AbortError') setSearchError(error.message || '歌詞搜尋失敗，請稍後再試。');
+      if (error.name !== 'AbortError') notify(error.message || '歌詞搜尋失敗，請稍後再試。', 'error');
     } finally {
       if (searchController.current === controller) setSearching(false);
     }
@@ -128,7 +147,7 @@ export default function SongStudy({onBack}) {
   function deleteSaved(song) {
     if (!window.confirm('確定要刪除「' + song.title + '」的本機歌詞及翻譯嗎？')) return;
     removeSong(song.id).then(() => {
-      if (activeRef.current?.id === song.id) {translationController.current?.abort(); translationController.current=null; activeRef.current = null; setActive(null);}
+      if (activeRef.current?.id === song.id) returnLibrary();
       reloadSaved(); notify('已移除本機歌曲。');
     }).catch(() => notify('刪除失敗，請稍後重試。', 'error'));
   }
@@ -155,9 +174,9 @@ export default function SongStudy({onBack}) {
       if (line && !chosen.translations?.[index]) a.push(index);
       return a;
     }, []);
-    let done = 0, chars = 0;
+    let done = 0, chars = 0, skipped = false;
     const memo = new Map();
-    setTranslationState({running:true, done:0, total:pending.length, error:''});
+    setTranslationState({running:true, done:0, total:pending.length});
     try {
       for (const index of pending) {
         if (controller.signal.aborted || activeRef.current?.id !== chosen.id) break;
@@ -167,7 +186,8 @@ export default function SongStudy({onBack}) {
         }
         if (new TextEncoder().encode(line).length > 500) {
           done += 1;
-          setTranslationState({running:true, done, total:pending.length, error:'個別句子太長，已略過。'});
+          skipped = true;
+          setTranslationState({running:true, done, total:pending.length});
           continue;
         }
         let zh = memo.get(line);
@@ -178,13 +198,13 @@ export default function SongStudy({onBack}) {
           ...value, translations:{...value.translations, [index]:zh}
         }));
         done += 1;
-        setTranslationState({running:true, done, total:pending.length, error:''});
+        setTranslationState({running:true, done, total:pending.length});
         await new Promise(resolve => setTimeout(resolve, 200));
       }
+      if (!controller.signal.aborted && skipped) notify('部分歌詞太長，請手動填寫對應中文。', 'error');
     } catch (error) {
       if (error.name !== 'AbortError' && !controller.signal.aborted) {
-        setTranslationState({running:false, done, total:pending.length, error:error.message || '翻譯失敗'});
-        return;
+        notify(error.message || '翻譯失敗，請稍後重試。', 'error');
       }
     } finally {
       if (translationController.current === controller) {
@@ -214,7 +234,7 @@ export default function SongStudy({onBack}) {
           updateActive(current => ({...current, readings:{...current.readings, [i]:formatted}}));
         }
       } catch {
-        if (!cancelled) setFuriganaError('無法載入日文字典，請檢查網路連線。原始歌詞仍可正常閱讀。');
+        if (!cancelled) notify('無法載入日文字典，請檢查網路；仍可閱讀原文。', 'error');
       }
     })();
     return () => {cancelled = true;};
