@@ -1,0 +1,65 @@
+.songStudy{width:100%;padding-bottom:8px;color:var(--app-text);min-width:0}
+.songStudy button,.songStudy input,.songStudy textarea{font:inherit}
+.songIntro{display:grid;gap:8px}
+.songIntro h2{display:flex;align-items:center;gap:9px;font-size:22px;margin:0;color:var(--app-text)}
+.songIntro p{font-size:13px;line-height:1.65;color:var(--app-muted);margin:0}
+.songBack{display:inline-flex;align-items:center;gap:5px;justify-self:start;border:0;background:none;color:var(--app-accent);padding:5px 0;font-size:13px!important;font-weight:700}
+.songSearch,.songPanel{background:var(--app-card);border:1px solid var(--app-line);border-radius:16px;padding:17px;box-shadow:var(--app-shadow);min-width:0}
+.songSearch label,.songManual label{display:grid;gap:8px;font-size:13px;color:var(--app-muted);font-weight:650}
+.songSearch>div{display:flex;gap:8px;margin-top:10px;min-width:0}
+.songStudy input:not([type=checkbox]),.songStudy textarea{border:1px solid var(--app-line);border-radius:10px;padding:11px 12px;background:var(--app-input);color:var(--app-text);min-width:0;width:100%;max-width:100%;font-size:14px;outline-offset:2px}
+.songStudy textarea{line-height:1.65;resize:vertical}
+.songSearch>div>input{flex:1}
+.songSearch button,.songPrimary{display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 13px;border:0;border-radius:10px;background:var(--app-accent);color:var(--app-accent-text);font-weight:750;white-space:nowrap;font-size:13px}
+.songSearch button:disabled{opacity:.65}
+.songPanel h3{font-size:15px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.songResults{display:grid;gap:2px}
+.songResults>button{display:flex;align-items:center;text-align:left;gap:10px;width:100%;border:0;border-bottom:1px solid var(--app-line);background:none;color:var(--app-text);padding:11px 3px;min-width:0}
+.songResults>button:last-child{border-bottom:0}
+.songResults>button>span{flex:1;min-width:0}
+.songResults strong,.songSaved strong{font-size:13px;display:block;overflow-wrap:anywhere}
+.songResults small,.songSaved small{display:block;color:var(--app-muted);font-size:11px;line-height:1.5;margin-top:4px;overflow-wrap:anywhere}
+.songManualToggle{display:flex;align-items:center;gap:8px;border:1px solid var(--app-line);border-radius:10px;color:var(--app-accent);background:var(--app-soft);padding:11px 13px;font-size:13px!important;font-weight:700}
+.songManual{display:grid;gap:13px}
+.songManual .songPrimary{justify-self:start}
+.songNotice{background:var(--app-soft);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--app-text);line-height:1.6;margin:0}
+.songSavedRow{display:flex;border-top:1px solid var(--app-line);align-items:center;gap:10px}
+.songSavedRow>button:first-child{flex:1;min-width:0;border:0;background:none;text-align:left;padding:12px 3px;color:var(--app-text)}
+.songDelete{flex:none;border:0;background:none;color:var(--app-muted);padding:10px}
+.songActive{display:grid;gap:14px}
+.songTrackHeader{display:flex;gap:12px;align-items:center;background:var(--app-card);padding:16px;border:1px solid var(--app-line);border-radius:17px;min-width:0}
+.songRecordIcon{width:48px;height:48px;flex:none;display:grid;place-items:center;border-radius:12px;background:var(--app-soft);color:var(--app-accent)}
+.songTrackHeader>div{flex:1;min-width:0}
+.songTrackHeader h3{font-size:17px;margin:0 0 5px;overflow-wrap:anywhere}
+.songTrackHeader p{font-size:12px;color:var(--app-muted);margin:0;overflow-wrap:anywhere}
+.songTrackHeader>button{border:0;background:none;color:var(--app-muted);padding:6px}
+.songOptions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.songOptions label{display:inline-flex;gap:7px;align-items:center;border-radius:9px;padding:9px 12px;background:var(--app-card);border:1px solid var(--app-line);font-size:12px}
+.songOptions input{accent-color:var(--app-accent);width:17px;height:17px}
+.songTranslateBar{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--app-line);border-radius:11px;padding:10px 12px;background:var(--app-soft);font-size:12px;color:var(--app-text)}
+.songTranslateBar button{display:flex;align-items:center;gap:5px;border:1px solid var(--app-line);background:var(--app-card);color:var(--app-accent);border-radius:8px;padding:7px 9px;white-space:nowrap;font-size:11px}
+.songLyrics{background:var(--app-card);border:1px solid var(--app-line);border-radius:16px;overflow:hidden}
+.songLine{display:flex;gap:11px;padding:17px 16px;border-bottom:1px solid var(--app-line);min-width:0}
+.songLine:last-child{border-bottom:0}
+.songLineNumber{font-variant-numeric:tabular-nums;font-size:10px;color:var(--app-muted);width:18px;flex:none;padding-top:12px}
+.songLineBody{flex:1;min-width:0}
+.songJapanese{font-family:'Noto Sans JP',sans-serif;font-size:19px;line-height:2.2;letter-spacing:.02em;overflow-wrap:anywhere;white-space:pre-wrap;margin:0 0 5px;color:var(--app-text)}
+.songRuby{cursor:pointer;border-bottom:1px dotted var(--app-accent)}
+.songRuby rt{font-size:11px;color:var(--app-accent);line-height:1.3}
+.songChinese{border:0;background:none;padding:5px 0;text-align:left;width:100%;font-size:14px!important;line-height:1.65;color:var(--app-text);overflow-wrap:anywhere;white-space:pre-wrap}
+.songChinese span{color:var(--app-accent);font-size:11px;margin-left:5px}
+.songUntranslated{color:var(--app-muted);font-size:12px!important}
+.songEdit{display:grid;grid-template-columns:1fr auto;gap:7px;align-items:start}
+.songEdit textarea{grid-column:1/-1;min-height:54px}
+.songEdit button{border:1px solid var(--app-line);border-radius:8px;background:var(--app-soft);color:var(--app-accent);padding:7px 10px;font-size:12px!important;display:flex;align-items:center;gap:4px}
+.songWordInfo{position:sticky;bottom:10px;z-index:5;background:var(--app-card);box-shadow:0 4px 25px #0002;border:1px solid var(--app-line);border-radius:12px;padding:14px}
+.songWordInfo>button{float:right;background:none;border:0;color:var(--app-muted)}
+.songWordInfo strong{font-size:15px}
+.songWordInfo p{font-size:12px;color:var(--app-muted);margin:6px 0 0}
+.songFinePrint{font-size:11px;color:var(--app-muted);line-height:1.7;margin:0;overflow-wrap:anywhere}
+.songSpin{animation:songRotate 1s linear infinite}
+@keyframes songRotate{to{transform:rotate(360deg)}}
+@media(max-width:400px){.songIntro h2{font-size:19px}.songSearch,.songPanel{padding:13px}.songLine{gap:7px;padding:16px 10px}.songJapanese{font-size:17px}.songLineNumber{width:14px}.songOptions{gap:6px}.songOptions label{padding:8px;font-size:11px}.songTrackHeader{padding:12px;gap:9px}.songRecordIcon{width:40px;height:40px}.songTrackHeader h3{font-size:15px}.songTranslateBar{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.songSpin{animation:none}}
+
+.songHomeEntry{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;line-height:1.5}

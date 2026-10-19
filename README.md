@@ -147,3 +147,13 @@ https://b110212000.github.io/kana-journey/
 - **安全與相容**：保留舊的分享／複製功能、三秒 Toast、學習紀錄與既有網址，沒有新增權限、伺服器或廣告。
 - 官方操作參考：[Apple iPhone Safari 網頁加入主畫面](https://support.apple.com/en-mide/guide/iphone/iphea86e5236/27/ios/27)
 - GitHub 追蹤：[#6](https://github.com/b110212000/kana-journey/issues/6)
+
+## v1.9.0：歌曲學日文（Issue #7）
+
+- 首頁及學習頁提供「歌曲學日文」入口；維持原五分頁底部導覽、不變更既有 localStorage 學習紀錄。
+- 輸入歌曲名稱或歌手搜尋 [LRCLIB](https://lrclib.net/docs) 的資料；選擇歌曲版本後逐行展示歌詞。找不到歌詞可自行貼上（支援一般文字與帶時間戳記的 LRC）。
+- 用 Kuroshiro + Kuromoji 在瀏覽器顯示漢字上方假名（支援關閉）；字典檔隨網站部署，點擊已標註的漢字可查詢 YOMIO 原本的單字庫，有些詞可能未收錄或標音錯誤。
+- 使用 [MyMemory](https://mymemory.translated.net/) 免費翻譯 API 逐句對照顯示繁體中文（按原始行序索引，不跳轉到外部翻譯頁），允許逐句修改中文，並存於裝置的獨立 IndexedDB。翻譯有每日額度與單次 500 bytes 限制，可能失敗、翻譯品質不保證；可停止、補翻及自行修改。
+- 不使用任何付費 AI API 或 AI Token；本機收藏不會提交到 GitHub 原始碼。**自動翻譯會將每句日文提交給 MyMemory 第三方處理**；使用前請自行評估歌詞著作權及第三方條款，不應將歌詞自動公開分享。
+- GitHub Pages 的 GitHub Actions 建置會複製 Kuromoji 字典到 `dist/dict/`，並於 PR 驗證 `npm run build`。
+- 手機／桌面持續使用既有亮暗主題及安全區。新功能需要網路搜尋歌詞與翻譯；首次顯示漢字假名需要載入字典資料。
