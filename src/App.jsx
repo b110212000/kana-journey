@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {House, BookOpen, Layers3, ClipboardCheck, Settings2, ChevronRight, Sun, Moon, Share2, Info, Trophy, History, Download, RotateCcw} from 'lucide-react';
+import {House, BookOpen, Layers3, ClipboardCheck, Settings2, Music2, ChevronRight, Sun, Moon, Share2, Info, Trophy, History, Download, RotateCcw} from 'lucide-react';
 import {scorePercent,scoreDate,shareScore,downloadScoreImage} from './share';
 import {hira,kata,romaji,words} from './data';
 import {levels,questionBank} from './questions';
@@ -11,6 +11,7 @@ import './ios.css';
 import './yomio.css';
 import './quiz.css';
 import SettingsView from './SettingsView';
+import SongStudy from './SongStudy';
 import {useAppUpdate} from './useAppUpdate';
 import packageInfo from '../package.json';
 import {useToast} from './ToastProvider';
@@ -196,7 +197,7 @@ function App(){
      notify('成績已存入測驗紀錄。');
    }else {setAt(x=>x+1);setPicked(null)}
  }
- function navButton(key,title,glyph){return <button key={key} type="button" aria-current={tab===key?'page':undefined} aria-label={key==='settings'&&update.available?'設定，有新版本可更新':title} className={'navButton '+(tab===key?'current':'')} onClick={()=>go(key)}><span className="navIcon" aria-hidden="true">{glyph}{key==='settings'&&update.available&&<span className="settingsUpdateDot"/>}</span><span>{title}</span></button>}
+ function navButton(key,title,glyph){return <button key={key} type="button" aria-current={(tab===key || (key==='learn' && tab==='songs'))?'page':undefined} aria-label={key==='settings'&&update.available?'設定，有新版本可更新':title} className={'navButton '+((tab===key || (key==='learn' && tab==='songs'))?'current':'')} onClick={()=>go(key)}><span className="navIcon" aria-hidden="true">{glyph}{key==='settings'&&update.available&&<span className="settingsUpdateDot"/>}</span><span>{title}</span></button>}
  return <div className="app">
   <aside className="sidebar">
    <button className="logo" onClick={()=>go('home')}><img className="brandIcon" src={APP_ICON} alt=""/><span><strong>YOMIO</strong><small>日本語，一點一點學</small></span></button>
@@ -207,7 +208,7 @@ function App(){
   </aside>
   <main className="content">
    <header className="appTop">
-    <div className="appTitle"><img src={APP_ICON} alt="" className="headerIcon"/><div><span className="smallOverline">YOMIO · JAPANESE LEARNING</span><h1>{({home:'今天也來學日文',learn:level==='初階'?'五十音學習':'課程學習',words:'單字練習',quiz:quizPanel==='history'?'測驗紀錄':'隨機測驗',settings:'設定'})[tab]}</h1></div></div>
+    <div className="appTitle"><img src={APP_ICON} alt="" className="headerIcon"/><div><span className="smallOverline">YOMIO · JAPANESE LEARNING</span><h1>{({home:'今天也來學日文',learn:level==='初階'?'五十音學習':'課程學習',words:'單字練習',quiz:quizPanel==='history'?'測驗紀錄':'隨機測驗',songs:'歌曲學日文',settings:'設定'})[tab]}</h1></div></div>
     {tab!=='settings'&&<button className="headerSettings" type="button" aria-label="開啟設定" onClick={()=>go('settings')}><Settings2 size={22}/>{update.available&&<span className="settingsUpdateDot" aria-hidden="true"/>}</button>}
    </header>
    <div className="contentScroll" ref={contentRef} id="app-scroll">
@@ -216,6 +217,7 @@ function App(){
     <div className="sectionHeading"><div><h2>繼續你的學習</h2><p>今天先完成一個小目標。</p></div></div>
     <button className="levelShortcut" onClick={()=>go('settings','level')} aria-label="前往設定調整目前程度"><span className="levelSymbol">文</span><span><small>目前程度</small><strong>{level}・{levels.find(x=>x.id===level)?.subtitle}</strong></span><ChevronRight size={19}/></button>
     <div className="actionPair"><button className="routeCard" onClick={()=>go('learn')}><span className="routeIcon">あ</span><strong>{level==='初階'?'學習五十音':'本級重點單字'}</strong><span>循序學習・每次一小組</span><b>開始學習 →</b></button><button className="routeCard" onClick={()=>beginQuizFromHome()}><span className="routeIcon warm">✓</span><strong>今天的 10 題練習</strong><span>題目和選項隨機排列</span><b>開始測驗 →</b></button></div>
+    <button className="secondaryWide songHomeEntry" onClick={()=>go('songs')}><Music2 size={19}/> 用喜歡的歌曲學日文 →</button>
     <div className="miniStats"><span>已作答 <strong>{stats.total||0}</strong> 題</span><span>正確率 <strong>{success}%</strong></span><span>待複習 <strong>{Object.values(wrong).filter(n=>n>0).length}</strong> 題</span></div>
     {quizHistory.length>0&&<button className="latestScoreShortcut" onClick={()=>{setQuizPanel('history');go('quiz')}}><span className="latestScoreIcon"><Trophy size={23}/></span><span><strong>我的測驗紀錄</strong><small>已完成 {quizHistory.length} 回合，最近一次 {scorePercent(quizHistory[0])}%</small></span><ChevronRight size={18}/></button>}
    </section>}
@@ -239,6 +241,7 @@ function App(){
      </div>}
      <div className="centerNav"><button onClick={()=>{setCard(i=>(i-1+row.length)%row.length);setAudioStatus('idle')}}>← 上一個</button><button onClick={()=>{setCard(i=>(i+1)%row.length);setAudioStatus('idle')}}>下一個 →</button></div>
     </div></>}
+    <button className="secondaryWide songHomeEntry" onClick={()=>go('songs')}><Music2 size={18}/> 用歌曲學日文 →</button>
    </section>}
    {tab==='words'&&<section className="page narrow"><div className="lessonTitle"><span className="eyebrow">{level}・單字卡</span><h2>少量多次，比一次背完有效</h2><p>先試著認讀，點開答案再看意思和例句。</p></div><WordFlashCard word={word} position={wordIndex} total={selectedWords.length} reveal={reveal} setReveal={setReveal} onPlay={play} onNext={()=>{setWordIndex(i=>(i+1)%selectedWords.length);setReveal(false)}} onPrev={()=>{setWordIndex(i=>(i-1+selectedWords.length)%selectedWords.length);setReveal(false)}}/><button className="secondaryWide" onClick={()=>go('quiz')}>使用 {level} 題庫測驗 →</button></section>}
    {tab==='quiz'&&<section className="page narrow"><div className="quizHeader">
@@ -274,6 +277,7 @@ function App(){
      <button className="quitTest" onClick={()=>{setPaper([]);setPicked(null)}}>結束本回合</button>
     </div>}
    </section>}
+   {tab==='songs'&&<SongStudy onBack={()=>go('learn')}/>}
    {tab==='settings'&&<SettingsView
     level={level} levels={levels} onLevelChange={changeLevel}
     theme={theme} onThemeChange={changeTheme} appIcon={APP_ICON}
