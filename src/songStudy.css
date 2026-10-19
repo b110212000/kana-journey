@@ -61,3 +61,5 @@
 @keyframes songRotate{to{transform:rotate(360deg)}}
 @media(max-width:400px){.songIntro h2{font-size:19px}.songSearch,.songPanel{padding:13px}.songLine{gap:7px;padding:16px 10px}.songJapanese{font-size:17px}.songLineNumber{width:14px}.songOptions{gap:6px}.songOptions label{padding:8px;font-size:11px}.songTrackHeader{padding:12px;gap:9px}.songRecordIcon{width:40px;height:40px}.songTrackHeader h3{font-size:15px}.songTranslateBar{flex-wrap:wrap}}
 @media(prefers-reduced-motion:reduce){.songSpin{animation:none}}
+
+.songHomeEntry{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;line-height:1.5}
