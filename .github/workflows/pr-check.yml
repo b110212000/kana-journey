@@ -18,3 +18,7 @@ jobs:
         run: |
           test "$(find dist/dict -name '*.dat.br' | wc -l)" -eq 12
           node --input-type=module -e "import fs from 'node:fs'; const p=JSON.parse(fs.readFileSync('package.json')); const v=JSON.parse(fs.readFileSync('dist/version.json')); if(p.version!==v.version)process.exit(1);"
+      - name: Install browser for furigana smoke test
+        run: npx playwright install --with-deps chromium
+      - name: Verify actual browser ruby rendering
+        run: node scripts/test-furigana-browser.mjs
