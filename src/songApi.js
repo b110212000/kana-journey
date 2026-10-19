@@ -1,5 +1,6 @@
 const LYRIC_API = 'https://lrclib.net';
 const TRANSLATE_API = 'https://api.mymemory.translated.net/get';
+let lyricRetryAfter = 0;
 const CLIENT_HEADERS = {'Lrclib-Client': 'YOMIO/1.9.0 (https://github.com/b110212000/kana-journey)'};
 export const MAX_LINES = 180;
 
@@ -15,11 +16,13 @@ export function splitLyrics(text) {
 export async function searchLyrics(query, signal) {
   const keyword = String(query || '').trim();
   if (!keyword) return [];
+  if (Date.now() < lyricRetryAfter) throw new Error('歌詞服務正在限流，請在 ' + Math.ceil((lyricRetryAfter - Date.now()) / 1000) + ' 秒後再搜尋。');
   const response = await fetch(LYRIC_API + '/api/search?q=' + encodeURIComponent(keyword), {
     headers: CLIENT_HEADERS, signal
   });
   if (response.status === 429) {
     const retry = Number(response.headers.get('Retry-After'));
+    lyricRetryAfter = Date.now() + Math.max(5, Number.isFinite(retry) && retry > 0 ? retry : 30) * 1000;
     throw new Error('歌詞服務目前請求過多。' + (Number.isFinite(retry) && retry > 0 ? '請在 ' + retry + ' 秒後再試。' : '請稍後再試。'));
   }
   if (!response.ok) throw new Error('無法搜尋歌詞（HTTP ' + response.status + '）。');
