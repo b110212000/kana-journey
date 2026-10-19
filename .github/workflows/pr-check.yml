@@ -1,0 +1,20 @@
+name: Verify pull request
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npm run build
+      - name: Verify dictionary and version
+        run: |
+          test "$(find dist/dict -name '*.dat.gz' | wc -l)" -eq 12
+          node --input-type=module -e "import fs from 'node:fs'; const p=JSON.parse(fs.readFileSync('package.json')); const v=JSON.parse(fs.readFileSync('dist/version.json')); if(p.version!==v.version)process.exit(1);"
