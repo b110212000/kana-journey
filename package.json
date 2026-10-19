@@ -1,19 +1,22 @@
 {
   "name": "kana-journey",
   "private": true,
-  "version": "1.8.1",
+  "version": "1.9.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "npm run test:bank && node scripts/generate-icons.mjs && node scripts/generate-version.mjs && vite build",
+    "build": "npm run test:bank && npm run test:songs && node scripts/copy-song-dictionary.mjs && node scripts/generate-icons.mjs && node scripts/generate-version.mjs && vite build",
     "preview": "vite preview",
-    "predev": "node scripts/generate-icons.mjs && node scripts/generate-version.mjs",
-    "test:bank": "node scripts/validate-question-bank.mjs"
+    "predev": "node scripts/copy-song-dictionary.mjs && node scripts/generate-icons.mjs && node scripts/generate-version.mjs",
+    "test:bank": "node scripts/validate-question-bank.mjs",
+    "test:songs": "node scripts/validate-song-study.mjs"
   },
   "dependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "lucide-react": "^0.468.0"
+    "lucide-react": "^0.468.0",
+    "kuroshiro": "^1.2.0",
+    "kuroshiro-analyzer-kuromoji": "^1.1.0"
   },
   "devDependencies": {
     "vite": "^6.3.0",
