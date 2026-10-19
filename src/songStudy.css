@@ -14,9 +14,9 @@
 .songSearch button:disabled{opacity:.65}
 .songPanel h3{font-size:15px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
 .songResults{display:grid;gap:2px}
-.songResults>button{display:flex;align-items:center;text-align:left;gap:10px;width:100%;border:0;border-bottom:1px solid var(--app-line);background:none;color:var(--app-text);padding:11px 3px;min-width:0}
-.songResults>button:last-child{border-bottom:0}
-.songResults>button>span{flex:1;min-width:0}
+.songResultsScroll>button{display:flex;align-items:center;text-align:left;gap:10px;width:100%;border:0;border-bottom:1px solid var(--app-line);background:none;color:var(--app-text);padding:11px 3px;min-width:0}
+.songResultsScroll>button:last-child{border-bottom:0}
+.songResultsScroll>button>span{flex:1;min-width:0}
 .songResults strong,.songSaved strong{font-size:13px;display:block;overflow-wrap:anywhere}
 .songResults small,.songSaved small{display:block;color:var(--app-muted);font-size:11px;line-height:1.5;margin-top:4px;overflow-wrap:anywhere}
 .songManualToggle{display:flex;align-items:center;gap:8px;border:1px solid var(--app-line);border-radius:10px;color:var(--app-accent);background:var(--app-soft);padding:11px 13px;font-size:13px!important;font-weight:700}
@@ -63,3 +63,34 @@
 @media(prefers-reduced-motion:reduce){.songSpin{animation:none}}
 
 .songHomeEntry{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;line-height:1.5}
+
+/* #9: three independent screens. The library and results have bounded scroll areas. */
+.songAddButton{display:flex;gap:13px;align-items:center;width:100%;text-align:left;border:1px solid var(--app-hero-line);border-radius:16px;background:var(--app-hero);padding:18px;color:var(--app-text)}
+.songAddButton>svg:first-child{flex:none;width:42px;height:42px;padding:10px;border-radius:12px;background:var(--app-card);color:var(--app-accent)}
+.songAddButton>span{display:grid;gap:5px;flex:1;min-width:0}
+.songAddButton strong{font-size:16px}
+.songAddButton small{font-size:12px;color:var(--app-muted);line-height:1.5}
+.songAddButton>svg:last-child{flex:none;color:var(--app-accent)}
+.songHistoryHeading{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:4px}
+.songHistoryHeading h3{margin:0}
+.songHistoryHeading>span{color:var(--app-muted);font-size:12px;white-space:nowrap}
+.songLibraryList{max-height:min(55dvh,510px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;margin:0 -4px;padding:0 4px}
+.songSavedRow>button:first-child{display:flex;align-items:center;gap:11px;min-width:0}
+.songSavedDetail{flex:1;min-width:0}
+.songSmallIcon{width:38px;height:38px;flex:none;display:grid;place-items:center;background:var(--app-soft);border-radius:11px;color:var(--app-accent)}
+.songSavedRow>button:first-child>svg:last-child{color:var(--app-muted);flex:none}
+.songSavedRow:focus-within{background:var(--app-soft)}
+.songDelete:hover{color:var(--app-error)}
+.songEmptyHistory{min-height:168px;padding:22px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;color:var(--app-muted)}
+.songEmptyHistory>svg{color:var(--app-accent);opacity:.7}
+.songEmptyHistory strong{font-size:14px;color:var(--app-text)}
+.songEmptyHistory p{font-size:12px;line-height:1.6;margin:0}
+.songResultsScroll{max-height:min(56dvh,520px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.songResultsScroll>button:focus-visible,.songSavedRow button:focus-visible,.songAddButton:focus-visible{outline:2px solid var(--app-accent);outline-offset:-2px}
+@media(max-width:400px){
+ .songAddButton{padding:13px;gap:10px}
+ .songAddButton strong{font-size:14px}
+ .songAddButton small{font-size:11px}
+ .songHistoryHeading>span{font-size:11px}
+ .songSmallIcon{width:34px;height:34px}
+}
