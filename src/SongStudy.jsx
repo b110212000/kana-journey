@@ -44,6 +44,8 @@ export default function SongStudy({onBack}) {
   const searchController = useRef(null);
   const translationController = useRef(null);
   const [showFurigana, setShowFurigana] = useState(true);
+  const [furiganaStatus, setFuriganaStatus] = useState('idle');
+  const [furiganaRetry, setFuriganaRetry] = useState(0);
   const [showChinese, setShowChinese] = useState(true);
   const [translationState, setTranslationState] = useState({running:false, done:0, total:0});
   const [editing, setEditing] = useState(null);
@@ -83,6 +85,7 @@ export default function SongStudy({onBack}) {
     activeRef.current = null;
     setActive(null);
     setTranslationState({running:false, done:0, total:0});
+    setFuriganaStatus('idle');
     setEditing(null);
     setWordInfo(null);
     setResults([]);
@@ -105,6 +108,7 @@ export default function SongStudy({onBack}) {
     translationController.current?.abort();
     translationController.current = null;
     setTranslationState({running:false, done:0, total:0});
+    setFuriganaStatus('idle');
     setEditing(null);
     setWordInfo(null);
     changeActive(song);
@@ -239,6 +243,7 @@ export default function SongStudy({onBack}) {
     if (!active?.id || !showFurigana) return;
     let cancelled = false;
     const id = active.id;
+    setFuriganaStatus('loading');
     (async () => {
       try {
         const engine = await getFuriganaEngine();
@@ -250,12 +255,17 @@ export default function SongStudy({onBack}) {
           if (cancelled || activeRef.current?.id !== id) break;
           updateActive(current => ({...current, readings:{...current.readings, [i]:formatted}}));
         }
-      } catch {
-        if (!cancelled) notify('無法載入日文字典，請檢查網路；仍可閱讀原文。', 'error');
+        if (!cancelled) setFuriganaStatus('ready');
+      } catch (error) {
+        if (!cancelled) {
+          console.error('Furigana initialization/conversion failed:', error);
+          setFuriganaStatus('error');
+          notify('假名產生失敗，請點「重試標音」。', 'error');
+        }
       }
     })();
     return () => {cancelled = true;};
-  }, [active?.id, showFurigana]);
+  }, [active?.id, showFurigana, furiganaRetry]);
 
   const missing = active ? active.lines.filter((line, index) => line && !active.translations?.[index]).length : 0;
   return <section className="page narrow songStudy">
@@ -304,6 +314,8 @@ export default function SongStudy({onBack}) {
         <div className="songOptions">
           <label><input type="checkbox" checked={showFurigana} onChange={e=>setShowFurigana(e.target.checked)}/> 顯示漢字假名</label>
           <label><input type="checkbox" checked={showChinese} onChange={e=>setShowChinese(e.target.checked)}/> 顯示中文</label>
+          {showFurigana && furiganaStatus==='loading' && <span className="songFuriganaStatus" role="status">標音字典載入中…</span>}
+          {showFurigana && furiganaStatus==='error' && <button className="songRetryFurigana" type="button" onClick={()=>setFuriganaRetry(count=>count+1)}>重試標音</button>}
         </div>
         <div className="songTranslateBar">
           <span>{translationState.running ? '翻譯中 ' + translationState.done + '/' + translationState.total + '…' : missing===0 ? '逐句翻譯已完成' : '尚有 ' + missing + ' 句未翻譯'}</span>
